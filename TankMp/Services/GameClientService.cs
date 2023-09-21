@@ -4,8 +4,9 @@ using SignalRed.Common.Interfaces;
 using SignalRed.Common.Messages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using TankMp.Models;
+using TankMp.Models.ViewModels;
 
 namespace TankMp.Services
 {
@@ -18,19 +19,19 @@ namespace TankMp.Services
         public static GameClientService Instance => instance ?? (instance = new GameClientService());
         public bool Initialized => initialized;
         public LobbyViewModel LobbyViewModel { get; set; }
-        
-        
 
 
         private GameClientService() { }
 
         public void Initialize()
         {
-            SRClient.Instance.Initialize(this);
+            SignalRedClient.Instance.Initialize(this);
             initialized = true;
             LobbyViewModel = new LobbyViewModel();
         }
 
+
+        #region IGameClient
         public Task FailConnection(Exception exception)
         {
             throw new NotImplementedException();
@@ -76,21 +77,31 @@ namespace TankMp.Services
 
         public Task RegisterUser(UserMessage message)
         {
-            LobbyViewModel.Players.Add(message.UserName);
+            LobbyViewModel.AddOrUpdatePlayerFromNetworkMessage(message);
             return Task.CompletedTask;
         }
         public Task DeleteUser(UserMessage message)
         {
-            throw new NotImplementedException();
+            LobbyViewModel.TryRemovePlayerWithClientId(message.ClientId);
+            return Task.CompletedTask;
         }
         public Task ReckonUsers(List<UserMessage> users)
         {
-            LobbyViewModel.Players.Clear();
+            // first set all players to disconnected
+            foreach (var plyr in LobbyViewModel.Players)
+            {
+                plyr.IsDisconnected = true;
+            }
+
+            // now add or update any new players, which will update
+            // their IsDisconnected to false
             foreach (var user in users)
             {
-                LobbyViewModel.Players.Add(user.UserName);
+                LobbyViewModel.AddOrUpdatePlayerFromNetworkMessage(user);
             }
+            
             return Task.CompletedTask;
         }
+        #endregion
     }
 }

@@ -1,17 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-
 using FlatRedBall;
-using FlatRedBall.Graphics;
-using FlatRedBall.Screens;
 using Microsoft.Xna.Framework;
-
-using System.Linq;
-
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using TankMp.Services;
+using SignalRed.Client;
 
 namespace TankMp
 {
@@ -73,7 +62,7 @@ namespace TankMp
 
         void CustomInitialize()
         {
-            GameClientService.Instance.Initialize();
+            SignalRedClient.Instance.Initialize();
         }
 
         protected override void Update(GameTime gameTime)

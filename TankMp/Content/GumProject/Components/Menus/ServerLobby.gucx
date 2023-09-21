@@ -253,7 +253,7 @@
     <Variable>
       <Type>float</Type>
       <Name>PlayersList.Height</Name>
-      <Value xsi:type="xsd:float">-16</Value>
+      <Value xsi:type="xsd:float">-58</Value>
       <SetsValue>true</SetsValue>
     </Variable>
     <Variable>
@@ -281,6 +281,12 @@
       <SetsValue>true</SetsValue>
     </Variable>
     <Variable>
+      <Type>float</Type>
+      <Name>PlayersList.X</Name>
+      <Value xsi:type="xsd:float">0</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
       <Type>HorizontalAlignment</Type>
       <Name>PlayersList.X Origin</Name>
       <Value xsi:type="xsd:int">1</Value>
@@ -293,6 +299,12 @@
       <SetsValue>true</SetsValue>
     </Variable>
     <Variable>
+      <Type>float</Type>
+      <Name>PlayersList.Y</Name>
+      <Value xsi:type="xsd:float">-21</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
       <Type>VerticalAlignment</Type>
       <Name>PlayersList.Y Origin</Name>
       <Value xsi:type="xsd:int">1</Value>
@@ -302,6 +314,60 @@
       <Type>PositionUnitType</Type>
       <Name>PlayersList.Y Units</Name>
       <Value xsi:type="xsd:int">7</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>string</Type>
+      <Name>ReadyButton.ButtonDisplayText</Name>
+      <Value xsi:type="xsd:string">Ready!</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>string</Type>
+      <Name>ReadyButton.Parent</Name>
+      <Value xsi:type="xsd:string">LobbyMembersPanel</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>float</Type>
+      <Name>ReadyButton.Width</Name>
+      <Value xsi:type="xsd:float">-16</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>DimensionUnitType</Type>
+      <Name>ReadyButton.Width Units</Name>
+      <Value xsi:type="xsd:int">2</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>HorizontalAlignment</Type>
+      <Name>ReadyButton.X Origin</Name>
+      <Value xsi:type="xsd:int">1</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>PositionUnitType</Type>
+      <Name>ReadyButton.X Units</Name>
+      <Value xsi:type="xsd:int">6</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>float</Type>
+      <Name>ReadyButton.Y</Name>
+      <Value xsi:type="xsd:float">-8</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>VerticalAlignment</Type>
+      <Name>ReadyButton.Y Origin</Name>
+      <Value xsi:type="xsd:int">2</Value>
+      <SetsValue>true</SetsValue>
+    </Variable>
+    <Variable>
+      <Type>PositionUnitType</Type>
+      <Name>ReadyButton.Y Units</Name>
+      <Value xsi:type="xsd:int">5</Value>
       <SetsValue>true</SetsValue>
     </Variable>
     <Variable>
@@ -414,6 +480,11 @@
   </Instance>
   <Instance>
     <Name>SendChatButton</Name>
+    <BaseType>Controls/ButtonConfirm</BaseType>
+    <DefinedByBase>false</DefinedByBase>
+  </Instance>
+  <Instance>
+    <Name>ReadyButton</Name>
     <BaseType>Controls/ButtonConfirm</BaseType>
     <DefinedByBase>false</DefinedByBase>
   </Instance>

@@ -315,6 +315,111 @@
         "ElementType": "Screens",
         "EventType": 7,
         "TimestampUtc": "2023-09-21T19:07:48.7910742Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).ButtonConfirmInstance",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 5,
+        "TimestampUtc": "2023-09-21T20:08:48.2077072Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).ReadyButton",
+        "OldName": "Menus/ServerLobby (Container).ButtonConfirmInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:08:55.4003442Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 0,
+        "TimestampUtc": "2023-09-21T20:10:32.3206678Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 5,
+        "TimestampUtc": "2023-09-21T20:10:50.175344Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:51.6436802Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:51.6446801Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:51.6506817Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:51.664686Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).IconInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:51.6656861Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 5,
+        "TimestampUtc": "2023-09-21T20:14:54.1401604Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).NetworkIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:57.9716219Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).NetworkIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:57.9726245Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).NetworkIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:57.9796261Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).NetworkIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:57.9866276Z"
+      },
+      {
+        "NewName": "Controls/ListBoxItemPlayer (Container).NetworkIcon",
+        "OldName": "Controls/ListBoxItemPlayer (Container).ReadyIcon1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T20:14:57.9916285Z"
       }
     ]
   }

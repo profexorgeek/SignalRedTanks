@@ -75,6 +75,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>listboxitem</Name>
     </None>
+    <None Include="content\gumproject\components\controls\listboxitemplayer.gucx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>listboxitemplayer</Name>
+    </None>
     <None Include="content\gumproject\components\controls\passwordbox.gucx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>passwordbox</Name>
@@ -425,6 +429,10 @@
     <Compile Include="GumRuntimes\Controls\KeyboardRuntime.Generated.cs">
       <DependentUpon>KeyboardRuntime.cs</DependentUpon>
     </Compile>
+    <Compile Include="GumRuntimes\Controls\ListBoxItemPlayerRuntime.cs" />
+    <Compile Include="GumRuntimes\Controls\ListBoxItemPlayerRuntime.Generated.cs">
+      <DependentUpon>ListBoxItemPlayerRuntime.cs</DependentUpon>
+    </Compile>
     <Compile Include="GumRuntimes\Controls\ListBoxItemRuntime.cs" />
     <Compile Include="GumRuntimes\Controls\ListBoxItemRuntime.Generated.cs">
       <DependentUpon>ListBoxItemRuntime.cs</DependentUpon>
@@ -539,7 +547,8 @@
     </Compile>
     <Compile Include="GumRuntimes\SpriteRuntime.Generated.cs" />
     <Compile Include="GumRuntimes\TextRuntime.Generated.cs" />
-    <Compile Include="Models\LobbyViewModel.cs" />
+    <Compile Include="Models\NetworkModels\UserReadyModel.cs" />
+    <Compile Include="Models\ViewModels\LobbyViewModel.cs" />
     <Compile Include="Performance\IEntityFactory.Generated.cs" />
     <Compile Include="Performance\PoolList.Generated.cs" />
     <Compile Include="Program.cs" />
@@ -551,7 +560,6 @@
     <Compile Include="Screens\ServerLobby.Generated.cs">
       <DependentUpon>ServerLobby.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\GameClientService.cs" />
     <Compile Include="Setup\CameraSetup.Generated.cs" />
     <Compile Include="TileCollisions\CollidableListVsTileShapeCollectionRelationship.Generated.cs" />
     <Compile Include="TileCollisions\CollidableVsTileShapeCollectionRelationship.Generated.cs" />
@@ -619,6 +627,9 @@
       <Name>GumCore.DesktopGlNet6</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SignalRed\SignalRed.Common\SignalRed.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

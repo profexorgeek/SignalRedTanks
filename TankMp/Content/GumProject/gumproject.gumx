@@ -97,6 +97,11 @@
     <LinkType>ReferenceOriginal</LinkType>
   </ComponentReference>
   <ComponentReference>
+    <Name>Controls/ListBoxItemPlayer</Name>
+    <ElementType>Component</ElementType>
+    <LinkType>ReferenceOriginal</LinkType>
+  </ComponentReference>
+  <ComponentReference>
     <Name>Controls/PasswordBox</Name>
     <ElementType>Component</ElementType>
     <LinkType>ReferenceOriginal</LinkType>
