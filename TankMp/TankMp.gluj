@@ -83,13 +83,25 @@
       "Name": "Screens\\ConnectToServer"
     },
     {
+      "Name": "Screens\\GameScreen"
+    },
+    {
+      "Name": "Screens\\Level1"
+    },
+    {
       "Name": "Screens\\ServerLobby"
     }
   ],
   "EntityReferences": [],
   "Bookmarks": [],
   "PluginData": {
-    "RequiredPlugins": []
+    "RequiredPlugins": [
+      {
+        "Name": "Tiled Plugin",
+        "Version": "2.16.0.0",
+        "VersionRequirement": 2
+      }
+    ]
   },
   "DisplaySettings": {
     "Name": "Custom",

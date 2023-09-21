@@ -255,6 +255,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>ConnectToServerGum</Name>
     </None>
+    <None Include="content\gumproject\screens\gamescreengum.gusx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>GameScreenGum</Name>
+    </None>
+    <None Include="content\gumproject\screens\level1gum.gusx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Level1Gum</Name>
+    </None>
     <None Include="content\gumproject\screens\serverlobbygum.gusx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>ServerLobbyGum</Name>
@@ -299,12 +307,26 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>uispritesheet</Name>
     </None>
+    <None Include="content\screens\level1\level1map.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Level1Map</Name>
+    </None>
+    <None Include="content\standardtileset.tsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>standardtileset</Name>
+    </None>
+    <None Include="content\standardtileseticons.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>standardtileseticons</Name>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
     <Compile Include="FileAliases.Generated.cs" />
     <Compile Include="Forms\Components\Menus\ServerLobbyForms.Generated.cs" />
     <Compile Include="Forms\Screens\ConnectToServerGumForms.Generated.cs" />
+    <Compile Include="Forms\Screens\GameScreenGumForms.Generated.cs" />
+    <Compile Include="Forms\Screens\Level1GumForms.Generated.cs" />
     <Compile Include="Forms\Screens\ServerLobbyGumForms.Generated.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Game1.Generated.cs">
@@ -533,7 +555,15 @@
     <Compile Include="GumRuntimes\Elements\VerticalLinesRuntime.Generated.cs">
       <DependentUpon>VerticalLinesRuntime.cs</DependentUpon>
     </Compile>
+    <Compile Include="GumRuntimes\GameScreenGumRuntime.cs" />
+    <Compile Include="GumRuntimes\GameScreenGumRuntime.Generated.cs">
+      <DependentUpon>GameScreenGumRuntime.cs</DependentUpon>
+    </Compile>
     <Compile Include="GumRuntimes\GumIdb.Generated.cs" />
+    <Compile Include="GumRuntimes\Level1GumRuntime.cs" />
+    <Compile Include="GumRuntimes\Level1GumRuntime.Generated.cs">
+      <DependentUpon>Level1GumRuntime.cs</DependentUpon>
+    </Compile>
     <Compile Include="GumRuntimes\Menus\ServerLobbyRuntime.cs" />
     <Compile Include="GumRuntimes\Menus\ServerLobbyRuntime.Generated.cs">
       <DependentUpon>ServerLobbyRuntime.cs</DependentUpon>
@@ -555,6 +585,14 @@
     <Compile Include="Screens\ConnectToServer.cs" />
     <Compile Include="Screens\ConnectToServer.Generated.cs">
       <DependentUpon>ConnectToServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Screens\GameScreen.Generated.cs">
+      <DependentUpon>GameScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Level1.cs" />
+    <Compile Include="Screens\Level1.Generated.cs">
+      <DependentUpon>Level1.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\ServerLobby.cs" />
     <Compile Include="Screens\ServerLobby.Generated.cs">

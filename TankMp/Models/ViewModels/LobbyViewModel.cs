@@ -20,10 +20,14 @@ namespace TankMp.Models.ViewModels
 
         public string CurrentChat { get => Get<string>(); set => Set(value); }
 
+        public bool IsGameStartable { get => Get<bool>(); private set => Set(value); }
+
         public LobbyViewModel()
         {
             Players = new ObservableCollection<PlayerStatusViewModel>();
             Chats = new ObservableCollection<string>();
+
+            UpdateReadyStatus();
         }
 
         public void AddOrUpdatePlayerFromNetworkMessage(UserMessage message)
@@ -57,6 +61,8 @@ namespace TankMp.Models.ViewModels
             {
                 plyr.IsReady = isReady;
             }
+
+            UpdateReadyStatus();
         }
 
         public void TryRemovePlayerWithClientId(string id)
@@ -66,6 +72,11 @@ namespace TankMp.Models.ViewModels
             {
                 Players.Remove(existing);
             }
+        }
+
+        public void UpdateReadyStatus()
+        {
+            IsGameStartable = Players.Count > 1 && Players.All(p => p.IsReady == true);
         }
     }
 }

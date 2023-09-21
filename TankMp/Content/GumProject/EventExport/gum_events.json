@@ -420,6 +420,34 @@
         "ElementType": "Components",
         "EventType": 7,
         "TimestampUtc": "2023-09-21T20:14:57.9916285Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).ButtonDenyInstance",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 5,
+        "TimestampUtc": "2023-09-21T21:54:11.9024755Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).LeaveButton",
+        "OldName": "Menus/ServerLobby (Container).ButtonDenyInstance",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T21:54:17.352677Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).ReadyButton1",
+        "OldName": null,
+        "ElementType": "Components",
+        "EventType": 5,
+        "TimestampUtc": "2023-09-21T22:43:03.2766398Z"
+      },
+      {
+        "NewName": "Menus/ServerLobby (Container).StartButton",
+        "OldName": "Menus/ServerLobby (Container).ReadyButton1",
+        "ElementType": "Components",
+        "EventType": 7,
+        "TimestampUtc": "2023-09-21T22:43:07.1877266Z"
       }
     ]
   }

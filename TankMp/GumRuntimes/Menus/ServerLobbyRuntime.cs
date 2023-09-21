@@ -11,10 +11,9 @@ namespace TankMp.GumRuntimes.Menus
         {
             PlayersList.FormsControl.ListBoxItemGumType = typeof(ListBoxItemPlayerRuntime);
             PlayersList.FormsControl.SetBinding(nameof(ListBox.Items), nameof(ViewModel.Players));
-            
             ChatsList.FormsControl.SetBinding(nameof(ListBox.Items), nameof(ViewModel.Chats));
-            
             ChatEntryTextBox.FormsControl.SetBinding(nameof(TextBox.Text), nameof(ViewModel.CurrentChat));
+            StartButton.FormsControl.SetBinding(nameof(StartButton.FormsControl.IsEnabled), nameof(ViewModel.IsGameStartable));
         }
     }
 }
