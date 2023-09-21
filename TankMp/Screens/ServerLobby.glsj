@@ -1,0 +1,16 @@
+{
+  "Tags": [
+    "GLUE"
+  ],
+  "Source": "GLUE",
+  "ReferencedFiles": [
+    {
+      "Name": "GumProject/Screens/ServerLobbyGum.gusx",
+      "IsSharedStatic": true,
+      "RuntimeType": "TankMp.GumRuntimes.ServerLobbyGumRuntime",
+      "ProjectsToExcludeFrom": []
+    }
+  ],
+  "Name": "Screens\\ServerLobby",
+  "CustomClassesForExport": []
+}

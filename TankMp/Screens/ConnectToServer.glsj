@@ -1,0 +1,78 @@
+{
+  "Tags": [
+    "GLUE"
+  ],
+  "Source": "GLUE",
+  "ReferencedFiles": [
+    {
+      "Name": "GumProject/Screens/ConnectToServerGum.gusx",
+      "IsSharedStatic": true,
+      "RuntimeType": "TankMp.GumRuntimes.ConnectToServerGumRuntime",
+      "ProjectsToExcludeFrom": []
+    }
+  ],
+  "NamedObjects": [
+    {
+      "InstanceName": "IpTextbox",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceFile": "GumProject/Screens/ConnectToServerGum.gusx",
+      "SourceName": "IpTextbox (TankMp.GumRuntimes.Controls.TextBoxRuntime)",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "JoinButton",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceFile": "GumProject/Screens/ConnectToServerGum.gusx",
+      "SourceName": "JoinButton (TankMp.GumRuntimes.Controls.ButtonConfirmRuntime)",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "CancelButton",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceFile": "GumProject/Screens/ConnectToServerGum.gusx",
+      "SourceName": "CancelButton (TankMp.GumRuntimes.Controls.ButtonDenyRuntime)",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "UsernameTextbox",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceFile": "GumProject/Screens/ConnectToServerGum.gusx",
+      "SourceName": "UsernameTextbox (TankMp.GumRuntimes.Controls.TextBoxRuntime)",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    }
+  ],
+  "Name": "Screens\\ConnectToServer",
+  "CustomClassesForExport": []
+}
