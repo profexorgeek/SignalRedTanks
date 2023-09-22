@@ -134,12 +134,12 @@ namespace TankMp.Screens
                 ScreenManager.MoveToScreen(message.NewScreen);
             }
         }
-        private void EntityCreateOrUpdateReceived(PayloadMessage message)
+        private void EntityCreateOrUpdateReceived(EntityStateMessage message)
         {
-            if(message.PayloadType == typeof(PlayerJoinStatus).FullName)
+            if(message.StateType == typeof(PlayerJoinStatus).FullName)
             {
                 var existing = lobbyViewModel.Players.Where(p => p.ClientId == message.ClientId).FirstOrDefault();
-                var networkModel = message.GetPayload<PlayerStatusNetworkModel>();
+                var networkModel = message.GetState<PlayerStatusNetworkModel>();
                 if(existing != null)
                 {
                     existing.UpdateFromEntityMessage(message);
