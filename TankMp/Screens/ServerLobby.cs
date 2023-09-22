@@ -70,7 +70,7 @@ namespace TankMp.Screens
         {
             lobbyViewModel.UpdateStartableStatus();
             var myPlayer = lobbyViewModel.Players
-                .Where(p => p.ClientId == SignalRedClient.Instance.ClientId)
+                .Where(p => p.ClientId == SignalRedClient.Instance.ConnectionId)
                 .FirstOrDefault();
 
             if(myPlayer == null)
@@ -134,7 +134,7 @@ namespace TankMp.Screens
                 ScreenManager.MoveToScreen(message.NewScreen);
             }
         }
-        private void EntityCreateOrUpdateReceived(EntityMessage message)
+        private void EntityCreateOrUpdateReceived(PayloadMessage message)
         {
             if(message.PayloadType == typeof(PlayerJoinStatus).FullName)
             {
