@@ -55,6 +55,69 @@
       "AttachToContainer": true,
       "GenerateTimedEmit": true,
       "DefinedByBase": true
+    },
+    {
+      "InstanceName": "SolidCollision",
+      "SourceClassType": "FlatRedBall.TileCollisions.TileShapeCollection",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        },
+        {
+          "Name": "CollisionTileSize",
+          "Value": 16.0
+        },
+        {
+          "Name": "CollisionFillWidth",
+          "Value": 32
+        },
+        {
+          "Name": "CollisionFillHeight",
+          "Value": 1
+        },
+        {
+          "Name": "InnerSizeWidth",
+          "Value": 800.0
+        },
+        {
+          "Name": "InnerSizeHeight",
+          "Value": 600.0
+        },
+        {
+          "Name": "SourceTmxName",
+          "Value": "Map",
+          "Type": "Object"
+        },
+        {
+          "Name": "TmxCollisionName",
+          "Value": "SolidCollision",
+          "Type": "Object"
+        },
+        {
+          "Name": "CollisionCreationOptions",
+          "Value": 4,
+          "Type": "Object"
+        },
+        {
+          "Name": "CollisionTileTypeName",
+          "Value": "SolidCollision",
+          "Type": "Object"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "TileShapeCollection",
+      "HasPublicProperty": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true,
+      "DefinedByBase": true
     }
   ],
   "Name": "Screens\\Level1",

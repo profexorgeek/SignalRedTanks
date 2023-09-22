@@ -19,6 +19,10 @@
     <None Remove="**\*.glsj" />
     <None Remove="**\*.glej" />
     <None Remove="**\*.gluj" />
+    <None Include="content\entities\tanks\tankbase\topdownvaluesstatic.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>TopDownValuesStatic</Name>
+    </None>
     <None Include="content\gumproject\components\controls\buttonclose.gucx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>buttonclose</Name>
@@ -322,6 +326,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
+    <Compile Include="DataTypes\TopDownValues.Generated.cs" />
+    <Compile Include="Entities\Bullets\BulletBase.cs" />
+    <Compile Include="Entities\Bullets\BulletBase.Generated.cs">
+      <DependentUpon>BulletBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Tanks\TankBase.cs" />
+    <Compile Include="Entities\Tanks\TankBase.Generated.cs">
+      <DependentUpon>TankBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Tanks\TurretBase.cs" />
+    <Compile Include="Entities\Tanks\TurretBase.Generated.cs">
+      <DependentUpon>TurretBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\BulletBaseFactory.Generated.cs" />
+    <Compile Include="Factories\TankBaseFactory.Generated.cs" />
+    <Compile Include="Factories\TurretBaseFactory.Generated.cs" />
     <Compile Include="FileAliases.Generated.cs" />
     <Compile Include="Forms\Components\Menus\ServerLobbyForms.Generated.cs" />
     <Compile Include="Forms\Screens\ConnectToServerGumForms.Generated.cs" />
@@ -577,8 +597,11 @@
     </Compile>
     <Compile Include="GumRuntimes\SpriteRuntime.Generated.cs" />
     <Compile Include="GumRuntimes\TextRuntime.Generated.cs" />
+    <Compile Include="Input\ITankController.cs" />
+    <Compile Include="Input\KeyboardController.cs" />
     <Compile Include="Models\NetworkModels\UserReadyModel.cs" />
     <Compile Include="Models\ViewModels\LobbyViewModel.cs" />
+    <Compile Include="Models\ViewModels\PlayerStatusViewModel.cs" />
     <Compile Include="Performance\IEntityFactory.Generated.cs" />
     <Compile Include="Performance\PoolList.Generated.cs" />
     <Compile Include="Program.cs" />
@@ -624,6 +647,10 @@
     <Compile Include="TileGraphics\TileNodeNetworkCreator.Generated.cs" />
     <Compile Include="TileGraphics\Tileset.Generated.cs" />
     <Compile Include="TileGraphics\TilesetExtensionMethods.Generated.cs" />
+    <Compile Include="TopDown\AnimationSet.Generated.cs" />
+    <Compile Include="TopDown\DirectionBasedAnimationLayer.Generated.cs" />
+    <Compile Include="TopDown\Enums.Generated.cs" />
+    <Compile Include="TopDown\Interfaces.Generated.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -633,7 +660,7 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
   </ItemGroup>
@@ -664,6 +691,7 @@
     <ProjectReference Include="../../Gum/GumCore/GumCoreXnaPc/GumCore.DesktopGlNet6/GumCore.DesktopGlNet6.csproj">
       <Name>GumCore.DesktopGlNet6</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\NarfoxGameTools\NarfoxGameTools\NarfoxGameTools.DesktopGlNet6\NarfoxGametools.DesktopGlNet6.csproj" />
     <ProjectReference Include="..\..\SignalRed\SignalRed.Common\SignalRed.Common.csproj" />
   </ItemGroup>
   <ItemGroup>

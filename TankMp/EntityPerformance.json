@@ -1,0 +1,42 @@
+{
+  "EntityManagementValueList": [
+    {
+      "Name": "Entities\\Bullets\\Bullet",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "CircleInstance"
+        }
+      ]
+    },
+    {
+      "Name": "Entities\\Tanks\\TankBase",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "BodyCollision"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "TurretBaseInstance"
+        }
+      ]
+    },
+    {
+      "Name": "Entities\\Tanks\\TurretBase",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "TurretBarrel"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "TurretCircle"
+        }
+      ]
+    }
+  ]
+}

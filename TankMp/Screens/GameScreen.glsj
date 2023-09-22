@@ -13,6 +13,52 @@
   ],
   "NamedObjects": [
     {
+      "InstanceName": "TankBaseList",
+      "SourceClassType": "FlatRedBall.Math.PositionedObjectList<T>",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "PositionedObjectList (Generic)",
+      "SourceClassGenericType": "Entities\\Tanks\\TankBase",
+      "ExposedInDerived": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "BulletList",
+      "SourceClassType": "FlatRedBall.Math.PositionedObjectList<T>",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "PositionedObjectList (Generic)",
+      "SourceClassGenericType": "Entities\\Bullets\\BulletBase",
+      "ExposedInDerived": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
       "InstanceName": "Map",
       "SourceClassType": "FlatRedBall.TileGraphics.LayeredTileMap",
       "Properties": [
@@ -44,6 +90,154 @@
       "SourceType": 2,
       "SourceFile": "FlatRedBall.TileGraphics.LayeredTileMap",
       "SetByDerived": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "CameraController",
+      "SourceClassType": "FlatRedBall.Entities.CameraControllingEntity",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": 16.0,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 2,
+      "SourceFile": "Camera Controlling Entity",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "SolidCollision",
+      "SourceClassType": "FlatRedBall.TileCollisions.TileShapeCollection",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        },
+        {
+          "Name": "CollisionCreationOptions",
+          "Value": 4
+        },
+        {
+          "Name": "CollisionTileSize",
+          "Value": 16.0
+        },
+        {
+          "Name": "CollisionFillWidth",
+          "Value": 32
+        },
+        {
+          "Name": "CollisionFillHeight",
+          "Value": 1
+        },
+        {
+          "Name": "InnerSizeWidth",
+          "Value": 800.0
+        },
+        {
+          "Name": "InnerSizeHeight",
+          "Value": 600.0
+        },
+        {
+          "Name": "SourceTmxName",
+          "Value": "Map"
+        },
+        {
+          "Name": "TmxCollisionName",
+          "Value": "SolidCollision"
+        },
+        {
+          "Name": "CollisionTileTypeName",
+          "Value": "SolidCollision"
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "TileShapeCollection",
+      "HasPublicProperty": true,
+      "SetByDerived": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "TanksVsSolid",
+      "SourceClassType": "FlatRedBall.Math.Collision.CollidableListVsTileShapeCollectionRelationship<Entities.Tanks.TankBase>",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        },
+        {
+          "Name": "IsCollisionActive",
+          "Value": true
+        },
+        {
+          "Name": "IsAutomaticallyApplyPhysicsChecked",
+          "Value": true
+        },
+        {
+          "Name": "FirstCollisionMass",
+          "Value": 0.0
+        },
+        {
+          "Name": "SecondCollisionMass",
+          "Value": 1.0
+        },
+        {
+          "Name": "SoftCollisionCoefficient",
+          "Value": 1.0
+        },
+        {
+          "Name": "CollisionElasticity",
+          "Value": 0.25
+        },
+        {
+          "Name": "FirstCollisionName",
+          "Value": "TankBaseList"
+        },
+        {
+          "Name": "FirstSubCollisionSelectedItem",
+          "Value": "BodyCollision"
+        },
+        {
+          "Name": "SecondCollisionName",
+          "Value": "SolidCollision"
+        },
+        {
+          "Name": "CollisionType",
+          "Value": 2
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "Collision Relationship",
       "AttachToContainer": true,
       "GenerateTimedEmit": true
     }

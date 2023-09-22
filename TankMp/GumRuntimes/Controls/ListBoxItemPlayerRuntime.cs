@@ -1,4 +1,4 @@
-using TankMp.Models.ViewModels;
+using TankMp.Models;
 
 namespace TankMp.GumRuntimes.Controls
 {

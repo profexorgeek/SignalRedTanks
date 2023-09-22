@@ -5,14 +5,6 @@ using System.Linq;
 
 namespace TankMp.Models.ViewModels
 {
-    public class PlayerStatusViewModel : ViewModel
-    {
-        public string Id { get => Get<string>(); set => Set(value); }
-        public string Name { get => Get<string>(); set => Set(value); }
-        public bool IsReady { get => Get<bool>(); set => Set(value); }
-        public bool IsDisconnected { get => Get<bool>(); set => Set(value); }
-    }
-
     public class LobbyViewModel : ViewModel
     {
         public ObservableCollection<PlayerStatusViewModel> Players { get; set; }
@@ -27,56 +19,46 @@ namespace TankMp.Models.ViewModels
             Players = new ObservableCollection<PlayerStatusViewModel>();
             Chats = new ObservableCollection<string>();
 
-            UpdateReadyStatus();
+            UpdateStartableStatus();
         }
 
         public void AddOrUpdatePlayerFromNetworkMessage(UserMessage message)
         {
-            // NOTE: if we got a network message with a user, we know they are
-            // connected so this always sets IsDisconnected to false
-
-            var existing = Players.Where(p => p.Id == message.ClientId).FirstOrDefault();
+            var existing = Players.Where(p => p.ClientId == message.ClientId).FirstOrDefault();
             if(existing == null)
             {
-                var plyr = new PlayerStatusViewModel
-                {
-                    Id = message.ClientId,
-                    Name = message.UserName,
-                    IsReady = false,
-                    IsDisconnected = false,
-                };
+                var plyr = PlayerStatusViewModel.CreateFromUserMessage(message);
                 Players.Add(plyr);
             }
             else
             {
-                existing.Name = message.UserName;
-                existing.IsDisconnected = false;
+                existing.UpdateFromUserMessage(message);
             }
         }
 
         public void SetPlayerReadyStatus(string clientId, bool isReady)
         {
-            var plyr = Players.Where(p => p.Id == clientId).FirstOrDefault();
+            var plyr = Players.Where(p => p.ClientId == clientId).FirstOrDefault();
             if(plyr != null)
             {
-                plyr.IsReady = isReady;
+                plyr.CurrentStatus = PlayerJoinStatus.Ready;
             }
 
-            UpdateReadyStatus();
+            UpdateStartableStatus();
         }
 
         public void TryRemovePlayerWithClientId(string id)
         {
-            var existing = Players.Where(p => p.Id == id).FirstOrDefault();
+            var existing = Players.Where(p => p.ClientId == id).FirstOrDefault();
             if(existing != null)
             {
                 Players.Remove(existing);
             }
         }
 
-        public void UpdateReadyStatus()
+        public void UpdateStartableStatus()
         {
-            IsGameStartable = Players.Count > 1 && Players.All(p => p.IsReady == true);
+            IsGameStartable = Players.Count > 1 && Players.All(p => p.CurrentStatus == PlayerJoinStatus.Ready);
         }
     }
 }

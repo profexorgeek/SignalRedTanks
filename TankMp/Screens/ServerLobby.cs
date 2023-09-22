@@ -5,6 +5,7 @@ using SignalRed.Common.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TankMp.Models;
 using TankMp.Models.ViewModels;
 
 namespace TankMp.Screens
@@ -14,7 +15,6 @@ namespace TankMp.Screens
         const string ReadyMessageKey = "ReadyStatus";
 
         LobbyViewModel lobbyViewModel = new LobbyViewModel();
-
 
         void CustomInitialize()
         {
@@ -28,9 +28,10 @@ namespace TankMp.Screens
             SignalRedClient.Instance.UserUpdateReceived += UserUpdateReceived;
             SignalRedClient.Instance.UserDeleteReceived += UserDeleteReceived;
             SignalRedClient.Instance.UserReckonReceived += UserReckonReceived;
-            SignalRedClient.Instance.GenericMessageReceived += GenericMessageReceived;
             SignalRedClient.Instance.ConnectionClosed += ConnectionClosed;
             SignalRedClient.Instance.ScreenTransitionReceived += ScreenTransitionReceived;
+            SignalRedClient.Instance.EntityCreateReceived += EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityUpdateReceived += EntityCreateOrUpdateReceived;
 
             // request all users that may have joined before us
             SignalRedClient.Instance.ReckonUsers();
@@ -38,15 +39,17 @@ namespace TankMp.Screens
             // request all chats that may have happened before we joined
             SignalRedClient.Instance.RequestAllChats();
         }
+
         void CustomDestroy()
         {
             SignalRedClient.Instance.ChatReceived -= ChatReceived;
             SignalRedClient.Instance.UserUpdateReceived -= UserUpdateReceived;
             SignalRedClient.Instance.UserDeleteReceived -= UserDeleteReceived;
             SignalRedClient.Instance.UserReckonReceived -= UserReckonReceived;
-            SignalRedClient.Instance.GenericMessageReceived -= GenericMessageReceived;
             SignalRedClient.Instance.ConnectionClosed -= ConnectionClosed;
             SignalRedClient.Instance.ScreenTransitionReceived -= ScreenTransitionReceived;
+            SignalRedClient.Instance.EntityCreateReceived -= EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityUpdateReceived -= EntityCreateOrUpdateReceived;
         }
         void CustomActivity(bool firstTimeCalled)
         {
@@ -65,8 +68,15 @@ namespace TankMp.Screens
         }
         async void SendReadyStatus(bool isReady)
         {
-            lobbyViewModel.UpdateReadyStatus();
-            await SignalRedClient.Instance.SendGenericMessage(ReadyMessageKey, isReady.ToString());
+            lobbyViewModel.UpdateStartableStatus();
+            var myPlayer = lobbyViewModel.Players
+                .Where(p => p.ClientId == SignalRedClient.Instance.ClientId)
+                .FirstOrDefault();
+
+            if(myPlayer == null)
+            {
+                throw new Exception("We don't have a player for ourselves!!");
+            }
         }
         async void RequestStartGame()
         {
@@ -83,7 +93,7 @@ namespace TankMp.Screens
             // first set all players to disconnected
             foreach (var plyr in lobbyViewModel.Players)
             {
-                plyr.IsDisconnected = true;
+                plyr.CurrentStatus = PlayerJoinStatus.Disconnected;
             }
 
             // now add or update any new players, which will update
@@ -93,7 +103,7 @@ namespace TankMp.Screens
                 lobbyViewModel.AddOrUpdatePlayerFromNetworkMessage(user);
             }
 
-            lobbyViewModel.UpdateReadyStatus();
+            lobbyViewModel.UpdateStartableStatus();
         }
         void UserDeleteReceived(UserMessage message)
         {
@@ -113,14 +123,6 @@ namespace TankMp.Screens
         {
             lobbyViewModel.Chats.Add(message.ToString());
         }
-        void GenericMessageReceived(GenericMessage message)
-        {
-            if (message.MessageKey == ReadyMessageKey)
-            {
-                bool isReady = Convert.ToBoolean(message.MessageValue);
-                lobbyViewModel.SetPlayerReadyStatus(message.ClientId, isReady);
-            }
-        }
         void ConnectionClosed(Exception message)
         {
             MoveToScreen(typeof(ConnectToServer).FullName);
@@ -130,6 +132,23 @@ namespace TankMp.Screens
             if (message.NewScreen != this.GetType().FullName)
             {
                 ScreenManager.MoveToScreen(message.NewScreen);
+            }
+        }
+        private void EntityCreateOrUpdateReceived(EntityMessage message)
+        {
+            if(message.PayloadType == typeof(PlayerJoinStatus).FullName)
+            {
+                var existing = lobbyViewModel.Players.Where(p => p.ClientId == message.ClientId).FirstOrDefault();
+                var networkModel = message.GetPayload<PlayerStatusNetworkModel>();
+                if(existing != null)
+                {
+                    existing.UpdateFromEntityMessage(message);
+                }
+                else
+                {
+                    var newPlyr = PlayerStatusViewModel.CreateFromEntityMessage(message);
+                    lobbyViewModel.Players.Add(newPlyr);
+                }
             }
         }
         #endregion
