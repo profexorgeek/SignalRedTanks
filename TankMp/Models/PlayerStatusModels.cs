@@ -1,5 +1,5 @@
 ﻿using FlatRedBall.Forms.MVVM;
-using SignalRed.Common.Messages;
+using SignalRed.Common.Interfaces;
 
 namespace TankMp.Models
 {
@@ -12,73 +12,53 @@ namespace TankMp.Models
         Playing = 4,
     }
 
-    public class PlayerStatusViewModel : ViewModel
+    public class PlayerStatusViewModel : ViewModel, INetworkEntity
     {
-        public string ClientId { get => Get<string>(); set => Set(value); }
-        public string Name { get => Get<string>(); set => Set(value); }
+        bool destroyed = false;
+
+        public string Username { get => Get<string>(); set => Set(value); }
         public PlayerJoinStatus CurrentStatus { get => Get<PlayerJoinStatus>(); set => Set(value); }
         public int Deaths { get => Get<int>(); set => Set(value); }
         public int Kills { get => Get<int>(); set => Set(value); }
 
-
         [DependsOn(nameof(CurrentStatus))]
         public bool IsReady => CurrentStatus == PlayerJoinStatus.Ready;
-
         [DependsOn(nameof(CurrentStatus))]
         public bool IsDisconnected => CurrentStatus == PlayerJoinStatus.Disconnected;
-        
+        public bool Destroyed => destroyed;
 
-        public static PlayerStatusViewModel CreateFromUserMessage(UserMessage message)
+        public string OwnerClientId { get; set; }
+        public string EntityId { get; set; }
+        public object GetState()
         {
-            return new PlayerStatusViewModel()
+            return new PlayerStatusNetworkState()
             {
-                ClientId = message.ClientId,
-                Name = message.UserName,
-                CurrentStatus = PlayerJoinStatus.Connected,
-                Deaths = 0,
-                Kills = 0,
-            };
-        }
-        public static PlayerStatusViewModel CreateFromEntityMessage(EntityMessage message)
-        {
-            var model = message.GetPayload<PlayerStatusNetworkModel>();
-            var vm = new PlayerStatusViewModel()
-            {
-                ClientId = message.ClientId
-            };
-            vm.UpdateFromEntityMessage(message);
-            return vm;
-        }
-        public void UpdateFromEntityMessage(EntityMessage message)
-        {
-            var model = message.GetPayload<PlayerStatusNetworkModel>();
-            ClientId = model.ClientId;
-            Name = model.Name;
-            CurrentStatus = (PlayerJoinStatus)model.CurrentStatus;
-            Deaths = model.Deaths;
-            Kills = model.Kills;
-        }
-        public void UpdateFromUserMessage(UserMessage message)
-        {
-            Name = message.UserName;
-        }
-        public PlayerStatusNetworkModel ToNetworkModel()
-        {
-            return new PlayerStatusNetworkModel()
-            {
-                ClientId = ClientId,
-                Name = Name,
+                Username = Username,
                 CurrentStatus = (int)CurrentStatus,
                 Deaths = Deaths,
                 Kills = Kills
             };
         }
+        public void ApplyState(object networkState)
+        {
+            var typedState = networkState as PlayerStatusNetworkState;
+            if(typedState != null)
+            {
+                Username = typedState.Username;
+                CurrentStatus = (PlayerJoinStatus)typedState.CurrentStatus;
+                Deaths = typedState.Deaths;
+                Kills = typedState.Kills;
+            }
+        }
+        public void Destroy()
+        {
+            destroyed = true;
+        }
     }
 
-    public class PlayerStatusNetworkModel
+    public class PlayerStatusNetworkState
     {
-        public string ClientId { get; set; }
-        public string Name { get; set; }
+        public string Username { get; set; }
         public int CurrentStatus { get; set; }
         public int Deaths { get; set; }
         public int Kills { get; set; }

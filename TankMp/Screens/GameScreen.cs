@@ -63,29 +63,7 @@ namespace TankMp.Screens
 
         void InitializeInNetworkedMode()
         {
-            SignalRedClient.Instance.UserUpdateReceived += UserUpdateReceived;
-            SignalRedClient.Instance.UserDeleteReceived += UserDeleteReceived;
-            SignalRedClient.Instance.UserReckonReceived += UserReckonReceived;
-        }
-
-        private void UserReckonReceived(System.Collections.Generic.List<SignalRed.Common.Messages.UserMessage> message)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private void UserDeleteReceived(SignalRed.Common.Messages.UserMessage message)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private void UserUpdateReceived(SignalRed.Common.Messages.UserMessage message)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void DestroyInNetworkedMode()
-        {
-
+            
         }
     }
 }

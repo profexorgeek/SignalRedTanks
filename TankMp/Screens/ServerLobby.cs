@@ -1,3 +1,4 @@
+using FlatRedBall;
 using FlatRedBall.Input;
 using FlatRedBall.Screens;
 using SignalRed.Client;
@@ -6,50 +7,57 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TankMp.Models;
-using TankMp.Models.ViewModels;
+using TankMp.Services;
 
 namespace TankMp.Screens
 {
     public partial class ServerLobby
     {
-        const string ReadyMessageKey = "ReadyStatus";
+        const string MessageKey = "LobbyMessage";
+        const float ReckonFrequencySeconds = 3f;
 
-        LobbyViewModel lobbyViewModel = new LobbyViewModel();
+        float secondsToNextReckon = 0f;
+
+        GameStateViewModel GameState => GameStateService.Instance.GameState;
 
         void CustomInitialize()
         {
-            ServerLobbyGum.ServerLobbyMenu.BindingContext = lobbyViewModel;
+            ServerLobbyGum.ServerLobbyMenu.BindingContext = GameState;
             ServerLobbyGum.FormsControl.ServerLobbyMenu.SendChatButton.Click += (s,e) =>  SendChat();
             ServerLobbyGum.FormsControl.ServerLobbyMenu.ReadyButton.Click += (s, e) => SendReadyStatus(true);
             ServerLobbyGum.FormsControl.ServerLobbyMenu.LeaveButton.Click += (s, e) => LeaveServer();
             ServerLobbyGum.FormsControl.ServerLobbyMenu.StartButton.Click += (s, e) => RequestStartGame();
 
-            SignalRedClient.Instance.ChatReceived += ChatReceived;
-            SignalRedClient.Instance.UserUpdateReceived += UserUpdateReceived;
-            SignalRedClient.Instance.UserDeleteReceived += UserDeleteReceived;
-            SignalRedClient.Instance.UserReckonReceived += UserReckonReceived;
-            SignalRedClient.Instance.ConnectionClosed += ConnectionClosed;
-            SignalRedClient.Instance.ScreenTransitionReceived += ScreenTransitionReceived;
-            SignalRedClient.Instance.EntityCreateReceived += EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityUpdateReceived += EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.ConnectionClosed               += ConnectionClosed;
+            SignalRedClient.Instance.ScreenTransitionReceived       += ScreenTransitionReceived;
+            SignalRedClient.Instance.EntityCreateReceived           += EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityUpdateReceived           += EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityDeleteReceived           += EntityDeleteReceived;
+            SignalRedClient.Instance.EntityReckonReceived           += EntityReckonReceived;
+            SignalRedClient.Instance.GenericMessageReceived         += GenericMessageReceived;
 
-            // request all users that may have joined before us
-            SignalRedClient.Instance.ReckonUsers();
+            // clear any players and messages that existed before, we'll get a fresh list from the server
+            GameState.Messages.Clear();
+            GameState.Players.Clear();
 
-            // request all chats that may have happened before we joined
-            SignalRedClient.Instance.RequestAllChats();
+            var state = new PlayerStatusNetworkState()
+            {
+                CurrentStatus = (int)PlayerJoinStatus.Connected,
+                Username = GameState.LocalUsername,
+                Kills = 0,
+                Deaths = 0,
+            };
+            SignalRedClient.Instance.RegisterEntity(state);
         }
-
         void CustomDestroy()
         {
-            SignalRedClient.Instance.ChatReceived -= ChatReceived;
-            SignalRedClient.Instance.UserUpdateReceived -= UserUpdateReceived;
-            SignalRedClient.Instance.UserDeleteReceived -= UserDeleteReceived;
-            SignalRedClient.Instance.UserReckonReceived -= UserReckonReceived;
-            SignalRedClient.Instance.ConnectionClosed -= ConnectionClosed;
-            SignalRedClient.Instance.ScreenTransitionReceived -= ScreenTransitionReceived;
-            SignalRedClient.Instance.EntityCreateReceived -= EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityUpdateReceived -= EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.ConnectionClosed               -= ConnectionClosed;
+            SignalRedClient.Instance.ScreenTransitionReceived       -= ScreenTransitionReceived;
+            SignalRedClient.Instance.EntityCreateReceived           -= EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityUpdateReceived           -= EntityCreateOrUpdateReceived;
+            SignalRedClient.Instance.EntityDeleteReceived           -= EntityDeleteReceived;
+            SignalRedClient.Instance.EntityReckonReceived           -= EntityReckonReceived;
+            SignalRedClient.Instance.GenericMessageReceived         -= GenericMessageReceived;
         }
         void CustomActivity(bool firstTimeCalled)
         {
@@ -57,26 +65,34 @@ namespace TankMp.Screens
             {
                 SendChat();
             }
+
+            secondsToNextReckon -= TimeManager.SecondDifference;
+            if(secondsToNextReckon < 0)
+            {
+                SignalRedClient.Instance.ReckonEntities();
+                secondsToNextReckon = ReckonFrequencySeconds;
+            }
         }
         static void CustomLoadStaticContent(string contentManagerName) { }
 
         async void SendChat()
         {
-            var chat = lobbyViewModel.CurrentChat;
-            await SignalRedClient.Instance.SendChat(chat);
-            lobbyViewModel.CurrentChat = "";
+            if(!string.IsNullOrWhiteSpace(GameState.CurrentChat))
+            {
+                var chat = $"{GameState.LocalPlayer?.Username}: {GameState.CurrentChat}";
+                await SignalRedClient.Instance.SendGenericMessage(MessageKey, chat);
+                GameState.CurrentChat = "";
+            }            
         }
         async void SendReadyStatus(bool isReady)
         {
-            lobbyViewModel.UpdateStartableStatus();
-            var myPlayer = lobbyViewModel.Players
-                .Where(p => p.ClientId == SignalRedClient.Instance.ConnectionId)
-                .FirstOrDefault();
-
-            if(myPlayer == null)
+            var me = GameState.LocalPlayer;
+            if(me != null)
             {
-                throw new Exception("We don't have a player for ourselves!!");
+                me.CurrentStatus = isReady ? PlayerJoinStatus.Ready : PlayerJoinStatus.Connected;
+                await SignalRedClient.Instance.UpdateEntity(me);
             }
+            
         }
         async void RequestStartGame()
         {
@@ -84,73 +100,101 @@ namespace TankMp.Screens
         }
         async void LeaveServer()
         {
+            await SignalRedClient.Instance.DeleteEntity(GameState.LocalPlayer);
             await SignalRedClient.Instance.Disconnect();
         }
 
+
         #region Networking Handlers
-        void UserReckonReceived(List<UserMessage> message)
-        {
-            // first set all players to disconnected
-            foreach (var plyr in lobbyViewModel.Players)
-            {
-                plyr.CurrentStatus = PlayerJoinStatus.Disconnected;
-            }
-
-            // now add or update any new players, which will update
-            // their IsDisconnected to false
-            foreach (var user in message)
-            {
-                lobbyViewModel.AddOrUpdatePlayerFromNetworkMessage(user);
-            }
-
-            lobbyViewModel.UpdateStartableStatus();
-        }
-        void UserDeleteReceived(UserMessage message)
-        {
-            lobbyViewModel.TryRemovePlayerWithClientId(message.ClientId);
-
-            // any user changes must reset the ready status
-            SendReadyStatus(false);
-        }
-        void UserUpdateReceived(UserMessage message)
-        {
-            lobbyViewModel.AddOrUpdatePlayerFromNetworkMessage(message);
-
-            // any new user must reset the ready status
-            SendReadyStatus(false);
-        }
-        void ChatReceived(ChatMessage message)
-        {
-            lobbyViewModel.Chats.Add(message.ToString());
-        }
         void ConnectionClosed(Exception message)
         {
             MoveToScreen(typeof(ConnectToServer).FullName);
         }
+
         void ScreenTransitionReceived(ScreenMessage message)
         {
-            if (message.NewScreen != this.GetType().FullName)
+            if (message.TargetScreen != this.GetType().FullName)
             {
-                ScreenManager.MoveToScreen(message.NewScreen);
+                ScreenManager.MoveToScreen(message.TargetScreen);
             }
         }
-        private void EntityCreateOrUpdateReceived(EntityStateMessage message)
+
+        void EntityCreateOrUpdateReceived(EntityStateMessage message)
         {
-            if(message.StateType == typeof(PlayerJoinStatus).FullName)
+            if (message.StateType == typeof(PlayerStatusNetworkState).FullName)
             {
-                var existing = lobbyViewModel.Players.Where(p => p.ClientId == message.ClientId).FirstOrDefault();
-                var networkModel = message.GetState<PlayerStatusNetworkModel>();
+                var state = message.GetState<PlayerStatusNetworkState>();
+                var existing = GameState.Players
+                    .Where(p => p.EntityId == message.EntityId).FirstOrDefault();
                 if(existing != null)
                 {
-                    existing.UpdateFromEntityMessage(message);
+                    existing.ApplyState(state);
                 }
                 else
                 {
-                    var newPlyr = PlayerStatusViewModel.CreateFromEntityMessage(message);
-                    lobbyViewModel.Players.Add(newPlyr);
+                    var plyr = new PlayerStatusViewModel();
+                    plyr.OwnerClientId = message.OwnerClientId;
+                    plyr.EntityId = message.EntityId;
+                    plyr.ApplyState(state);
+                    GameState.Players.Add(plyr);
+
+                    // if a new player joined, set our state back to not ready
+                    if(plyr != GameState.LocalPlayer)
+                    {
+                        SendReadyStatus(false);
+                    }
                 }
             }
+
+            GameState.UpdateStartableStatus();
         }
+
+        void EntityDeleteReceived(EntityStateMessage message)
+        {
+            var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
+            if (plyr != null)
+            {
+                GameState.Players.Remove(plyr);
+            }
+            GameState.UpdateStartableStatus();
+        }
+
+        void EntityReckonReceived(List<EntityStateMessage> message)
+        {
+            var incomingPlayers = message.Where(m => m.StateType == typeof(PlayerStatusNetworkState).FullName);
+
+            // set all known players to disconnected
+            foreach(var p in GameState.Players)
+            {
+                p.CurrentStatus = PlayerJoinStatus.Disconnected;
+            }
+
+            // now update from our incoming list
+            foreach (var msg in incomingPlayers)
+            {
+                EntityCreateOrUpdateReceived(msg);
+            }
+
+            // finally remove players that aren't connected
+            for (var i = GameState.Players.Count - 1; i > -1; i--)
+            {
+                if (GameState.Players[i].CurrentStatus == PlayerJoinStatus.Disconnected)
+                {
+                    GameState.Players.RemoveAt(i);
+                }
+            }
+
+            GameState.UpdateStartableStatus();
+        }
+
+        private void GenericMessageReceived(GenericMessage message)
+        {
+            if(message.MessageKey == MessageKey)
+            {
+                GameState.Messages.Add(message.MessageValue);
+            }
+        }
+
         #endregion
     }
 }

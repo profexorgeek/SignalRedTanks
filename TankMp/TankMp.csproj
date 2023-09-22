@@ -599,9 +599,8 @@
     <Compile Include="GumRuntimes\TextRuntime.Generated.cs" />
     <Compile Include="Input\ITankController.cs" />
     <Compile Include="Input\KeyboardController.cs" />
-    <Compile Include="Models\NetworkModels\UserReadyModel.cs" />
-    <Compile Include="Models\ViewModels\LobbyViewModel.cs" />
-    <Compile Include="Models\ViewModels\PlayerStatusViewModel.cs" />
+    <Compile Include="Models\GameStateModels.cs" />
+    <Compile Include="Models\PlayerStatusModels.cs" />
     <Compile Include="Performance\IEntityFactory.Generated.cs" />
     <Compile Include="Performance\PoolList.Generated.cs" />
     <Compile Include="Program.cs" />
@@ -621,6 +620,7 @@
     <Compile Include="Screens\ServerLobby.Generated.cs">
       <DependentUpon>ServerLobby.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\GameStateService.cs" />
     <Compile Include="Setup\CameraSetup.Generated.cs" />
     <Compile Include="TileCollisions\CollidableListVsTileShapeCollectionRelationship.Generated.cs" />
     <Compile Include="TileCollisions\CollidableVsTileShapeCollectionRelationship.Generated.cs" />
@@ -693,9 +693,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\NarfoxGameTools\NarfoxGameTools\NarfoxGameTools.DesktopGlNet6\NarfoxGametools.DesktopGlNet6.csproj" />
     <ProjectReference Include="..\..\SignalRed\SignalRed.Common\SignalRed.Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

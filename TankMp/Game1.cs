@@ -1,6 +1,7 @@
 using FlatRedBall;
 using Microsoft.Xna.Framework;
 using SignalRed.Client;
+using TankMp.Services;
 
 namespace TankMp
 {
@@ -62,6 +63,7 @@ namespace TankMp
 
         void CustomInitialize()
         {
+            GameStateService.Instance.Initialize();
             SignalRedClient.Instance.Initialize();
         }
 

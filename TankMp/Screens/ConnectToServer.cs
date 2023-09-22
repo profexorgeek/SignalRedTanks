@@ -1,5 +1,6 @@
 using SignalRed.Client;
 using System;
+using TankMp.Services;
 
 namespace TankMp.Screens
 {
@@ -11,7 +12,7 @@ namespace TankMp.Screens
             CancelButton.FormsControl.Click += CancelJoinServer;
             SignalRedClient.Instance.ConnectionOpened += Connected;
 
-            // TODO: remove this, just makes testing faster for now
+            // TODO, DEBUG: remove this, just makes testing faster for now
             IpTextbox.FormsControl.Text = "http://localhost:5000";
         }
         void CustomDestroy()
@@ -25,9 +26,11 @@ namespace TankMp.Screens
         {
             var url = IpTextbox.FormsControl.Text;
             var username = UsernameTextbox.FormsControl.Text;
-            if(!string.IsNullOrEmpty(url))
+
+            if(!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(url))
             {
-                await SignalRedClient.Instance.Connect(url, username);
+                GameStateService.Instance.GameState.LocalUsername = username;
+                await SignalRedClient.Instance.Connect(url);
             }
         }
         void Connected()
@@ -38,6 +41,5 @@ namespace TankMp.Screens
         {
             // NOOP yet!
         }
-
     }
 }
