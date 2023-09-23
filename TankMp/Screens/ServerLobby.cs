@@ -28,14 +28,6 @@ namespace TankMp.Screens
             ServerLobbyGum.FormsControl.ServerLobbyMenu.LeaveButton.Click += (s, e) => LeaveServer();
             ServerLobbyGum.FormsControl.ServerLobbyMenu.StartButton.Click += (s, e) => RequestStartGame();
 
-            SignalRedClient.Instance.ConnectionClosed               += ConnectionClosed;
-            SignalRedClient.Instance.ScreenTransitionReceived       += ScreenTransitionReceived;
-            SignalRedClient.Instance.EntityCreateReceived           += EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityUpdateReceived           += EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityDeleteReceived           += EntityDeleteReceived;
-            SignalRedClient.Instance.EntityReckonReceived           += EntityReckonReceived;
-            SignalRedClient.Instance.GenericMessageReceived         += GenericMessageReceived;
-
             // clear any players and messages that existed before, we'll get a fresh list from the server
             GameState.Messages.Clear();
             GameState.Players.Clear();
@@ -49,18 +41,11 @@ namespace TankMp.Screens
             };
             SignalRedClient.Instance.CreateEntity(state);
         }
-        void CustomDestroy()
-        {
-            SignalRedClient.Instance.ConnectionClosed               -= ConnectionClosed;
-            SignalRedClient.Instance.ScreenTransitionReceived       -= ScreenTransitionReceived;
-            SignalRedClient.Instance.EntityCreateReceived           -= EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityUpdateReceived           -= EntityCreateOrUpdateReceived;
-            SignalRedClient.Instance.EntityDeleteReceived           -= EntityDeleteReceived;
-            SignalRedClient.Instance.EntityReckonReceived           -= EntityReckonReceived;
-            SignalRedClient.Instance.GenericMessageReceived         -= GenericMessageReceived;
-        }
+        void CustomDestroy() { }
         void CustomActivity(bool firstTimeCalled)
         {
+            DoNetworkMessages();
+
             if (InputManager.Keyboard.KeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
                 SendChat();
@@ -69,40 +54,102 @@ namespace TankMp.Screens
             secondsToNextReckon -= TimeManager.SecondDifference;
             if(secondsToNextReckon < 0)
             {
-                _ = SignalRedClient.Instance.ReckonEntities();
+                SignalRedClient.Instance.ReckonEntities();
                 secondsToNextReckon = ReckonFrequencySeconds;
             }
         }
         static void CustomLoadStaticContent(string contentManagerName) { }
 
-        async void SendChat()
+        void SendChat()
         {
             if(!string.IsNullOrWhiteSpace(GameState.CurrentChat))
             {
                 var chat = $"{GameState.LocalPlayer?.Username}: {GameState.CurrentChat}";
-                await SignalRedClient.Instance.CreateGenericMessage(MessageKey, chat);
+                SignalRedClient.Instance.CreateGenericMessage(MessageKey, chat);
                 GameState.CurrentChat = "";
             }            
         }
-        async void SendReadyStatus(bool isReady)
+        void SendReadyStatus(bool isReady)
         {
             var me = GameState.LocalPlayer;
             if(me != null)
             {
                 me.CurrentStatus = isReady ? PlayerJoinStatus.Ready : PlayerJoinStatus.Connected;
-                await SignalRedClient.Instance.UpdateEntity(me);
+                SignalRedClient.Instance.UpdateEntity(me);
             }
             
         }
-        async void RequestStartGame()
+        void RequestStartGame()
         {
-            await SignalRedClient.Instance.RequestScreenTransition(typeof(Level1).FullName);
+            SignalRedClient.Instance.RequestScreenTransition(typeof(Level1).FullName);
         }
-        async void LeaveServer()
+        void LeaveServer()
         {
-            await SignalRedClient.Instance.DeleteEntity(GameState.LocalPlayer);
-            await SignalRedClient.Instance.DisconnectAsync();
+            SignalRedClient.Instance.DeleteEntity(GameState.LocalPlayer);
+            SignalRedClient.Instance.Disconnect(() =>
+            {
+                MoveToScreen(typeof(ConnectToServer).FullName);
+            });
         }
+
+        void DoNetworkMessages()
+        {
+            DoNetworkScreenMessages();
+            DoNetworkEntityMessages();
+            DoNetworkGenericMessages();
+        }
+
+        void DoNetworkScreenMessages()
+        {
+            var message = SignalRedClient.Instance.GetCurrentScreen();
+            if (!string.IsNullOrEmpty(message.TargetScreen) &&
+                message.TargetScreen != this.GetType().FullName)
+            {
+                ScreenManager.MoveToScreen(message.TargetScreen);
+            }
+        }
+
+        void DoNetworkEntityMessages()
+        {
+            var messageTuples = SignalRedClient.Instance.GetEntityMessages();
+            for(var i = 0; i < messageTuples.Count; i++)
+            {
+                var message = messageTuples[i].Item1;
+                var messageType = messageTuples[i].Item2;
+                switch(messageType)
+                {
+                    case SignalRedMessageType.Reckon:
+                        CreateOrUpdateEntity(message, true);
+                        break;
+                    case SignalRedMessageType.Create:
+                        CreateOrUpdateEntity(message);
+                        break;
+                    case SignalRedMessageType.Update:
+                        CreateOrUpdateEntity(message);
+                        break;
+                    case SignalRedMessageType.Delete:
+                        DeleteEntity(message);
+                        break;
+                    default:
+                        throw new Exception($"Unexpected entity message type: {messageType} {message.StateType}");
+                        break;
+                }
+            }
+        }
+
+        void DoNetworkGenericMessages()
+        {
+            var messages = SignalRedClient.Instance.GetGenericMessages();
+            for(var i = 0; i < messages.Count; i++)
+            {
+                var message = messages[i];
+                if (message.MessageKey == MessageKey)
+                {
+                    GameState.Messages.Add(message.MessageValue);
+                }
+            }
+        }
+
 
 
         #region Networking Handlers
@@ -111,15 +158,7 @@ namespace TankMp.Screens
             MoveToScreen(typeof(ConnectToServer).FullName);
         }
 
-        void ScreenTransitionReceived(ScreenMessage message)
-        {
-            if (message.TargetScreen != this.GetType().FullName)
-            {
-                ScreenManager.MoveToScreen(message.TargetScreen);
-            }
-        }
-
-        void EntityCreateOrUpdateReceived(EntityStateMessage message)
+        void CreateOrUpdateEntity(EntityStateMessage message, bool force = false)
         {
             if (message.StateType == typeof(PlayerStatusNetworkState).FullName)
             {
@@ -128,14 +167,14 @@ namespace TankMp.Screens
                     .Where(p => p.EntityId == message.EntityId).FirstOrDefault();
                 if(existing != null)
                 {
-                    existing.ApplyState(state);
+                    existing.ApplyState(state, force);
                 }
                 else
                 {
                     var plyr = new PlayerStatusViewModel();
                     plyr.OwnerClientId = message.OwnerClientId;
                     plyr.EntityId = message.EntityId;
-                    plyr.ApplyState(state);
+                    plyr.ApplyState(state, force);
                     GameState.Players.Add(plyr);
 
                     // if a new player joined, set our state back to not ready
@@ -149,7 +188,7 @@ namespace TankMp.Screens
             GameState.UpdateStartableStatus();
         }
 
-        void EntityDeleteReceived(EntityStateMessage message)
+        void DeleteEntity(EntityStateMessage message)
         {
             var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
             if (plyr != null)
@@ -159,42 +198,33 @@ namespace TankMp.Screens
             GameState.UpdateStartableStatus();
         }
 
-        void EntityReckonReceived(List<EntityStateMessage> message)
-        {
-            var incomingPlayers = message.Where(m => m.StateType == typeof(PlayerStatusNetworkState).FullName);
+        //void EntityReckonReceived(List<EntityStateMessage> message)
+        //{
+        //    var incomingPlayers = message.Where(m => m.StateType == typeof(PlayerStatusNetworkState).FullName);
 
-            // set all known players to disconnected
-            foreach(var p in GameState.Players)
-            {
-                p.CurrentStatus = PlayerJoinStatus.Disconnected;
-            }
+        //    // set all known players to disconnected
+        //    foreach(var p in GameState.Players)
+        //    {
+        //        p.CurrentStatus = PlayerJoinStatus.Disconnected;
+        //    }
 
-            // now update from our incoming list
-            foreach (var msg in incomingPlayers)
-            {
-                EntityCreateOrUpdateReceived(msg);
-            }
+        //    // now update from our incoming list
+        //    foreach (var msg in incomingPlayers)
+        //    {
+        //        EntityCreateOrUpdateReceived(msg);
+        //    }
 
-            // finally remove players that aren't connected
-            for (var i = GameState.Players.Count - 1; i > -1; i--)
-            {
-                if (GameState.Players[i].CurrentStatus == PlayerJoinStatus.Disconnected)
-                {
-                    GameState.Players.RemoveAt(i);
-                }
-            }
+        //    // finally remove players that aren't connected
+        //    for (var i = GameState.Players.Count - 1; i > -1; i--)
+        //    {
+        //        if (GameState.Players[i].CurrentStatus == PlayerJoinStatus.Disconnected)
+        //        {
+        //            GameState.Players.RemoveAt(i);
+        //        }
+        //    }
 
-            GameState.UpdateStartableStatus();
-        }
-
-        private void GenericMessageReceived(GenericMessage message)
-        {
-            if(message.MessageKey == MessageKey)
-            {
-                GameState.Messages.Add(message.MessageValue);
-            }
-        }
-
+        //    GameState.UpdateStartableStatus();
+        //}
         #endregion
     }
 }

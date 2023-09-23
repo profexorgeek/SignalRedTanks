@@ -10,19 +10,15 @@ namespace TankMp.Screens
         {
             JoinButton.FormsControl.Click += TryJoinServer;
             CancelButton.FormsControl.Click += CancelJoinServer;
-            SignalRedClient.Instance.ConnectionOpened += Connected;
 
             // TODO, DEBUG: remove this, just makes testing faster for now
             IpTextbox.FormsControl.Text = "http://localhost:5000";
         }
-        void CustomDestroy()
-        {
-            SignalRedClient.Instance.ConnectionOpened -= Connected;
-        }
+        void CustomDestroy() { }
         void CustomActivity(bool firstTimeCalled) { }
         static void CustomLoadStaticContent(string contentManagerName) { }
 
-        async void TryJoinServer(object sender, EventArgs e)
+        void TryJoinServer(object sender, EventArgs e)
         {
             var url = IpTextbox.FormsControl.Text;
             var username = UsernameTextbox.FormsControl.Text;
@@ -30,12 +26,11 @@ namespace TankMp.Screens
             if(!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(url))
             {
                 GameStateService.Instance.GameState.LocalUsername = username;
-                await SignalRedClient.Instance.Connect(url);
+                SignalRedClient.Instance.Connect(url, () =>
+                {
+                    MoveToScreen(typeof(ServerLobby).FullName);
+                });
             }
-        }
-        void Connected()
-        {
-            MoveToScreen(typeof(ServerLobby).FullName);
         }
         void CancelJoinServer(object sender, EventArgs e)
         {

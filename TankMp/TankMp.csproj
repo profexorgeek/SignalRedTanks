@@ -16,9 +16,11 @@
   <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+    <EmbeddedResource Remove="TopDown\**" />
     <None Remove="**\*.glsj" />
     <None Remove="**\*.glej" />
     <None Remove="**\*.gluj" />
+    <None Remove="TopDown\**" />
     <None Include="content\entities\tanks\tankbase\topdownvaluesstatic.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>TopDownValuesStatic</Name>
@@ -649,10 +651,6 @@
     <Compile Include="TileGraphics\TileNodeNetworkCreator.Generated.cs" />
     <Compile Include="TileGraphics\Tileset.Generated.cs" />
     <Compile Include="TileGraphics\TilesetExtensionMethods.Generated.cs" />
-    <Compile Include="TopDown\AnimationSet.Generated.cs" />
-    <Compile Include="TopDown\DirectionBasedAnimationLayer.Generated.cs" />
-    <Compile Include="TopDown\Enums.Generated.cs" />
-    <Compile Include="TopDown\Interfaces.Generated.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />

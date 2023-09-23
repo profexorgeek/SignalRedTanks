@@ -29,13 +29,6 @@ namespace TankMp.Screens
         void CustomInitialize()
         {
             CheckValidConnection();
-
-
-            SignalRedClient.Instance.EntityCreateReceived += EntityCreateReceived;
-            SignalRedClient.Instance.EntityUpdateReceived += EntityUpdateReceived;
-            SignalRedClient.Instance.EntityDeleteReceived += EntityDeleteReceived;
-            SignalRedClient.Instance.EntityReckonReceived += EntityReckonReceived;
-
             RequestTankSpawn();
         }
 
@@ -90,7 +83,7 @@ namespace TankMp.Screens
                 VelocityX = 0,
                 VelocityY = 0,
             };
-            _ = SignalRedClient.Instance.CreateEntity(state);
+            SignalRedClient.Instance.CreateEntity(state);
         }
 
         private void EntityCreateReceived(EntityStateMessage message)
