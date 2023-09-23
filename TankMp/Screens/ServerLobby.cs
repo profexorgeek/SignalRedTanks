@@ -14,7 +14,7 @@ namespace TankMp.Screens
     public partial class ServerLobby
     {
         const string MessageKey = "LobbyMessage";
-        const float ReckonFrequencySeconds = 3f;
+        const float ReckonFrequencySeconds = 1f;
 
         float secondsToNextReckon = 0f;
 
@@ -69,7 +69,7 @@ namespace TankMp.Screens
             secondsToNextReckon -= TimeManager.SecondDifference;
             if(secondsToNextReckon < 0)
             {
-                SignalRedClient.Instance.ReckonEntities();
+                _ = SignalRedClient.Instance.ReckonEntities();
                 secondsToNextReckon = ReckonFrequencySeconds;
             }
         }

@@ -4,10 +4,12 @@ using NarfoxGameTools.Extensions;
 using System;
 using Microsoft.Xna.Framework;
 using FlatRedBall;
+using SignalRed.Common.Interfaces;
+using TankMp.Models;
 
 namespace TankMp.Entities.Tanks
 {
-    public partial class TankBase
+    public partial class TankBase : INetworkEntity
     {
         const float MaxSpeed = 200;
         const float MaxDrag = 1.5f;
@@ -16,19 +18,13 @@ namespace TankMp.Entities.Tanks
         const float FireRatePerSecond = 2f;
         ITankController controller;
 
+        public string OwnerClientId { get; set; }
+        public string EntityId { get; set; }
 
-        public ITankController Controller
-        {
-            get
-            {
-                return controller;
-            }
-            set
-            {
-                controller = value;
-                controller.Tank = this;
-            }
-        }
+
+        public ITankController Controller { get; set; }
+
+        
 
         private void CustomInitialize()
         {
@@ -53,6 +49,23 @@ namespace TankMp.Entities.Tanks
 
         }
 
+        public object GetState()
+        {
+            return new TankNetworkState
+            {
+                X = this.X,
+                Y = this.Y,
+                VelocityX = this.Velocity.X,
+                VelocityY = this.Velocity.Y,
+                AimAngle = this.TurretBaseInstance.RelativeRotationZ
+            };
+        }
+
+        public void ApplyState(object networkState, bool isReckoning = false)
+        {
+            
+        }
+
         void DoInput()
         {
             // EARLY OUT: no controller!
@@ -70,5 +83,7 @@ namespace TankMp.Entities.Tanks
             RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, frameLerp);
             TurretBaseInstance.RelativeRotationZ = Controller.AimAngle;
         }
+
+        
     }
 }

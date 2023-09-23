@@ -28,7 +28,7 @@ namespace TankMp.Models
 
         public void UpdateStartableStatus()
         {
-            IsGameStartable = Players.Count > 1 && Players.All(p => p.CurrentStatus == PlayerJoinStatus.Ready);
+            IsGameStartable = Players.Count > 0 && Players.All(p => p.CurrentStatus == PlayerJoinStatus.Ready);
         }
     }
 }

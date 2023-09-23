@@ -39,7 +39,7 @@ namespace TankMp.Models
                 Kills = Kills
             };
         }
-        public void ApplyState(object networkState)
+        public void ApplyState(object networkState, bool isReckoning = false)
         {
             var typedState = networkState as PlayerStatusNetworkState;
             if(typedState != null)
