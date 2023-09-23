@@ -47,7 +47,7 @@ namespace TankMp.Screens
                 Kills = 0,
                 Deaths = 0,
             };
-            SignalRedClient.Instance.RegisterEntity(state);
+            SignalRedClient.Instance.CreateEntity(state);
         }
         void CustomDestroy()
         {
@@ -80,7 +80,7 @@ namespace TankMp.Screens
             if(!string.IsNullOrWhiteSpace(GameState.CurrentChat))
             {
                 var chat = $"{GameState.LocalPlayer?.Username}: {GameState.CurrentChat}";
-                await SignalRedClient.Instance.SendGenericMessage(MessageKey, chat);
+                await SignalRedClient.Instance.CreateGenericMessage(MessageKey, chat);
                 GameState.CurrentChat = "";
             }            
         }
@@ -101,7 +101,7 @@ namespace TankMp.Screens
         async void LeaveServer()
         {
             await SignalRedClient.Instance.DeleteEntity(GameState.LocalPlayer);
-            await SignalRedClient.Instance.Disconnect();
+            await SignalRedClient.Instance.DisconnectAsync();
         }
 
 

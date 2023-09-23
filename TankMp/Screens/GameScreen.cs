@@ -90,7 +90,7 @@ namespace TankMp.Screens
                 VelocityX = 0,
                 VelocityY = 0,
             };
-            _ = SignalRedClient.Instance.RegisterEntity(state);
+            _ = SignalRedClient.Instance.CreateEntity(state);
         }
 
         private void EntityCreateReceived(EntityStateMessage message)
