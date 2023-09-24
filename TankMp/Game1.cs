@@ -63,11 +63,14 @@ namespace TankMp
 
         void CustomInitialize()
         {
+            FlatRedBall.Debugging.Debugger.TextCorner = FlatRedBall.Debugging.Debugger.Corner.TopRight;
+
             GameStateService.Instance.Initialize();
             SignalRedClient.Instance.Initialize();
 
             // fake latency
-            SignalRedClient.Instance.DebugMaxSimulatedLatencyMilliseconds = 2000f;
+            SignalRedClient.Instance.MinAveLatencyMilliseconds = 150;
+            SignalRedClient.Instance.MaxAveLatencySeconds = 250;
         }
 
         protected override void Update(GameTime gameTime)
@@ -75,6 +78,7 @@ namespace TankMp
             FlatRedBallServices.Update(gameTime);
 
             SignalRedClient.Instance.Update();
+            FlatRedBall.Debugging.Debugger.Write($"Time: {SignalRedClient.Instance.ServerTime} Ping: {SignalRedClient.Instance.Ping}");
 
             FlatRedBall.Screens.ScreenManager.Activity();
 

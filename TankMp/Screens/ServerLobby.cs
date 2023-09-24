@@ -14,8 +14,8 @@ namespace TankMp.Screens
     public partial class ServerLobby
     {
         const string MessageKey = "LobbyMessage";
-        const float ReckonFrequencySeconds = 5f;
-        const float PingUpdateFrequency = 0.5f;
+        const float PingUpdateFrequencySeconds = 0.5f;
+        const float ReckonFrequencySeconds = 3f;
 
         float secondsToNextReckon = 0f;
         float secondsToNextPingUpdate = 0f;
@@ -62,7 +62,7 @@ namespace TankMp.Screens
             if(secondsToNextPingUpdate < 0)
             {
                 UpdatePing();
-                secondsToNextPingUpdate = PingUpdateFrequency;
+                secondsToNextPingUpdate = PingUpdateFrequencySeconds;
             }
         }
         static void CustomLoadStaticContent(string contentManagerName) { }
@@ -118,12 +118,46 @@ namespace TankMp.Screens
 
         protected override void CreateEntity(EntityStateMessage message)
         {
-            CreateOrUpdateEntity(message, true);
+            if(message.StateType == typeof(PlayerStatusNetworkState).FullName)
+            {
+                var existing = GameState.Players.Where(p => p.EntityId == message.EntityId).FirstOrDefault();
+                if(existing == null)
+                {
+                    var plyr = new PlayerStatusViewModel();
+                    plyr.OwnerClientId = message.OwnerClientId;
+                    plyr.EntityId = message.EntityId;
+                    plyr.ApplyCreationState(message.GetState<PlayerStatusNetworkState>(), message.DeltaSeconds);
+                    GameState.Players.Add(plyr);
+
+                    // if a new player joined, set our state back to not ready
+                    if (plyr != GameState.LocalPlayer)
+                    {
+                        SendReadyStatus(false);
+                    }
+
+                    GameState.UpdateStartableStatus();
+                }
+            }
         }
 
         protected override void UpdateEntity(EntityStateMessage message, bool isReckonMessage = false)
         {
-            CreateOrUpdateEntity(message, isReckonMessage);
+            if (message.StateType == typeof(PlayerStatusNetworkState).FullName)
+            {
+                // Take updates for other client players
+                var existing = GameState.Players.Where(p => p.EntityId == message.EntityId).FirstOrDefault();
+                if (existing != null && existing != GameState.LocalPlayer)
+                {
+                    existing.ApplyUpdateState(message.GetState<PlayerStatusNetworkState>(), message.DeltaSeconds, isReckonMessage);
+                }
+                // We got a reckoning message and its an entity we don't have... create it
+                else if(isReckonMessage)
+                {
+                    CreateEntity(message);
+                }
+
+                GameState.UpdateStartableStatus();
+            }
         }
 
         protected override void DeleteEntity(EntityStateMessage message)
@@ -134,36 +168,6 @@ namespace TankMp.Screens
                 plyr.Destroy();
                 GameState.Players.Remove(plyr);
             }
-            GameState.UpdateStartableStatus();
-        }
-
-        void CreateOrUpdateEntity(EntityStateMessage message, bool force = false)
-        {
-            if (message.StateType == typeof(PlayerStatusNetworkState).FullName)
-            {
-                var state = message.GetState<PlayerStatusNetworkState>();
-                var existing = GameState.Players
-                    .Where(p => p.EntityId == message.EntityId).FirstOrDefault();
-                if (existing != null)
-                {
-                    existing.ApplyCreationState(state, message.DeltaSeconds);
-                }
-                else
-                {
-                    var plyr = new PlayerStatusViewModel();
-                    plyr.OwnerClientId = message.OwnerClientId;
-                    plyr.EntityId = message.EntityId;
-                    plyr.ApplyUpdateState(state, message.DeltaSeconds, force);
-                    GameState.Players.Add(plyr);
-
-                    // if a new player joined, set our state back to not ready
-                    if (plyr != GameState.LocalPlayer)
-                    {
-                        SendReadyStatus(false);
-                    }
-                }
-            }
-
             GameState.UpdateStartableStatus();
         }
     }
