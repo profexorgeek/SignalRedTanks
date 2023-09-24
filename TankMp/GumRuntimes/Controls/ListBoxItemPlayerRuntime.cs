@@ -7,7 +7,7 @@ namespace TankMp.GumRuntimes.Controls
         public PlayerStatusViewModel ViewModel => BindingContext as PlayerStatusViewModel;
         partial void CustomInitialize ()
         {
-            TextInstance.SetBinding(nameof(TextRuntime.Text), nameof(ViewModel.Username));
+            TextInstance.SetBinding(nameof(TextRuntime.Text), nameof(ViewModel.UsernameAndPing));
             ReadyIcon.SetBinding(nameof(ReadyIcon.Visible), nameof(ViewModel.IsReady));
             NetworkIcon.SetBinding(nameof(NetworkIcon.Visible), nameof(ViewModel.IsDisconnected));
         }

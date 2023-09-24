@@ -15,8 +15,10 @@ namespace TankMp.Screens
     {
         const string MessageKey = "LobbyMessage";
         const float ReckonFrequencySeconds = 1f;
+        const float PingUpdateFrequency = 0.5f;
 
         float secondsToNextReckon = 0f;
+        float secondsToNextPingUpdate = 0f;
 
         GameStateViewModel GameState => GameStateService.Instance.GameState;
 
@@ -55,6 +57,13 @@ namespace TankMp.Screens
                 SignalRedClient.Instance.ReckonEntities();
                 secondsToNextReckon = ReckonFrequencySeconds;
             }
+
+            secondsToNextPingUpdate -= TimeManager.SecondDifference;
+            if(secondsToNextPingUpdate < 0)
+            {
+                UpdatePing();
+                secondsToNextPingUpdate = PingUpdateFrequency;
+            }
         }
         static void CustomLoadStaticContent(string contentManagerName) { }
 
@@ -75,7 +84,15 @@ namespace TankMp.Screens
                 me.CurrentStatus = isReady ? PlayerJoinStatus.Ready : PlayerJoinStatus.Connected;
                 SignalRedClient.Instance.UpdateEntity(me);
             }
-            
+        }
+        void UpdatePing()
+        {
+            var me = GameState.LocalPlayer;
+            if (me != null)
+            {
+                me.Ping = SignalRedClient.Instance.Ping;
+                SignalRedClient.Instance.UpdateEntity(me);
+            }
         }
         void RequestStartGame()
         {
