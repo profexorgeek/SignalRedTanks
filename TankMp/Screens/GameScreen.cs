@@ -83,15 +83,12 @@ namespace TankMp.Screens
                 controller = controller ?? CreateController(message.OwnerClientId, message.EntityId);
                 if (controller.IsDestroyed)
                 {
-                    _ = InstructionManager.DoOnMainThreadAsync(() =>
-                    {
-                        TrySpawnTankForController(controller);
-                        controller.ApplyState(state, true);
-                    });
+                    TrySpawnTankForController(controller);
+                    controller.ApplyCreationState(state, message.DeltaSeconds);
                 }
                 else
                 {
-                    controller.ApplyState(state);
+                    controller.ApplyUpdateState(state, message.DeltaSeconds);
                 }
             }
         }
@@ -102,10 +99,9 @@ namespace TankMp.Screens
             {
                 var state = message.GetState<TankNetworkState>();
                 var controller = GetControllerForEntityId(message.EntityId);
-
                 if (controller != null)
                 {
-                    controller.ApplyState(state);
+                    controller.ApplyUpdateState(state, message.DeltaSeconds);
                 }
             }
         }
@@ -120,7 +116,7 @@ namespace TankMp.Screens
                 if(controller != null)
                 {
                     // NOTE: this doesn't actually destroy the controller, it tells the controller
-                    // to destroy it's tank. The controller will stick around and respawn
+                    // to destroy its tank. The controller will stick around and respawn
                     controller.Destroy();
 
                     bool isLocal = controller.OwnerClientId == SignalRedClient.Instance.ClientId;

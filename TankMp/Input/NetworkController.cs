@@ -1,11 +1,13 @@
-﻿using SignalRed.Common.Interfaces;
+﻿using SignalRed.Client;
+using SignalRed.Common.Interfaces;
 using System.Threading.Tasks;
+using TankMp.Entities;
 using TankMp.Entities.Tanks;
 using TankMp.Models;
 
 namespace TankMp.Input
 {
-    public class NetworkController : ITankController, INetworkEntity
+    public class NetworkController : ITankController, ISignalRedEntity<TankNetworkState>
     {
         public TankNetworkState lastReceivedState = new TankNetworkState();
         TankBase tank;
@@ -34,35 +36,7 @@ namespace TankMp.Input
             }
         }
 
-
-        public void ApplyState(object networkState, bool force = false)
-        {
-            if(networkState.GetType() == typeof(TankNetworkState) && Tank != null)
-            {
-                var typedState = networkState as TankNetworkState;
-                lastReceivedState = typedState;
-
-                Tank.X = typedState.X;
-                Tank.Y = typedState.Y;
-                Tank.Velocity.X = typedState.VelocityX;
-                Tank.Velocity.Y = typedState.VelocityY;
-            }
-        }
-
-        public object GetState()
-        {
-            return new TankNetworkState()
-            {
-                MovementAngle = MovementAngle,
-                MovementMagnitude = MovementMagnitude,
-                AimAngle = AimAngle,
-                Firing = Firing,
-                X = Tank.X,
-                Y = Tank.Y,
-                VelocityX = Tank.Velocity.X,
-                VelocityY = Tank.Velocity.Y,
-            };
-        }
+        
 
         public void Update()
         {
@@ -77,6 +51,40 @@ namespace TankMp.Input
                 Tank.Destroy();
                 Tank = null;
             }
+        }
+
+        public void ApplyCreationState(TankNetworkState networkState, float deltaSeconds)
+        {
+            ApplyUpdateState(networkState, deltaSeconds, true);
+        }
+
+        public void ApplyUpdateState(TankNetworkState networkState, float deltaSeconds, bool force = false)
+        {
+            if (Tank != null)
+            {
+                var typedState = networkState as TankNetworkState;
+                lastReceivedState = typedState;
+
+                Tank.X = typedState.X;
+                Tank.Y = typedState.Y;
+                Tank.Velocity.X = typedState.VelocityX;
+                Tank.Velocity.Y = typedState.VelocityY;
+            }
+        }
+
+        public TankNetworkState GetState()
+        {
+            return new TankNetworkState()
+            {
+                MovementAngle = MovementAngle,
+                MovementMagnitude = MovementMagnitude,
+                AimAngle = AimAngle,
+                Firing = Firing,
+                X = Tank.X,
+                Y = Tank.Y,
+                VelocityX = Tank.Velocity.X,
+                VelocityY = Tank.Velocity.Y,
+            };
         }
     }
 }

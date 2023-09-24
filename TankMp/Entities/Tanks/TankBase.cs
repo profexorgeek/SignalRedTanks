@@ -9,7 +9,7 @@ using TankMp.Models;
 
 namespace TankMp.Entities.Tanks
 {
-    public partial class TankBase : INetworkEntity
+    public partial class TankBase
     {
         const float MaxSpeed = 200;
         const float MaxDrag = 1.5f;

@@ -131,6 +131,7 @@ namespace TankMp.Screens
             var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
             if (plyr != null)
             {
+                plyr.Destroy();
                 GameState.Players.Remove(plyr);
             }
             GameState.UpdateStartableStatus();
@@ -145,14 +146,14 @@ namespace TankMp.Screens
                     .Where(p => p.EntityId == message.EntityId).FirstOrDefault();
                 if (existing != null)
                 {
-                    existing.ApplyState(state, force);
+                    existing.ApplyCreationState(state, message.DeltaSeconds);
                 }
                 else
                 {
                     var plyr = new PlayerStatusViewModel();
                     plyr.OwnerClientId = message.OwnerClientId;
                     plyr.EntityId = message.EntityId;
-                    plyr.ApplyState(state, force);
+                    plyr.ApplyUpdateState(state, message.DeltaSeconds, force);
                     GameState.Players.Add(plyr);
 
                     // if a new player joined, set our state back to not ready

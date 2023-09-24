@@ -4,14 +4,16 @@ using FlatRedBall.Input;
 using FlatRedBall.Math.Geometry;
 using Microsoft.Xna.Framework.Input;
 using SignalRed.Client;
+using SignalRed.Common.Interfaces;
 using System;
 using System.Numerics;
+using TankMp.Entities;
 using TankMp.Entities.Tanks;
 using TankMp.Models;
 
 namespace TankMp.Input
 {
-    public class KeyboardController : ITankController
+    public class KeyboardController : ITankController, ISignalRedEntity<TankNetworkState>
     {
         const float NetworkUpdateFrequencySeconds = 0.5f;
 
@@ -46,48 +48,6 @@ namespace TankMp.Input
             }
         }
 
-        public object GetState()
-        {
-            return new TankNetworkState()
-            {
-                MovementAngle = MovementAngle,
-                MovementMagnitude = MovementMagnitude,
-                AimAngle = AimAngle,
-                Firing = Firing,
-                X = Tank.X,
-                Y = Tank.Y,
-                VelocityX = Tank.Velocity.X,
-                VelocityY = Tank.Velocity.Y,
-            };
-        }
-
-        public void ApplyState(object networkState, bool force = false)
-        {
-            // NOOP:
-            // keyboard controller is controlled by a local player and
-            // the local player is authoritative over their own entity
-            // so we do not apply incoming states unless they are a reckoning
-            // or new creation state
-            if(force && Tank != null)
-            {
-                var typedState = networkState as TankNetworkState;
-                Tank.X = typedState.X;
-                Tank.Y = typedState.Y;
-                Tank.Velocity.X = typedState.VelocityX;
-                Tank.Velocity.Y = typedState.VelocityY;
-            }
-        }
-
-        public void Destroy()
-        {
-            if(Tank != null)
-            {
-                Tank.Controller = null;
-                Tank.Destroy();
-                Tank = null;
-            }
-        }
-
         public void Update()
         {
             var kb = InputManager.Keyboard;
@@ -111,6 +71,51 @@ namespace TankMp.Input
                     SignalRedClient.Instance.UpdateEntity(this);
                     secondsToNextNetworkUpdate = NetworkUpdateFrequencySeconds;
                 }
+            }
+        }
+
+        public void ApplyCreationState(TankNetworkState networkState, float deltaSeconds)
+        {
+            if (Tank != null)
+            {
+                Tank.X = networkState.X;
+                Tank.Y = networkState.Y;
+                Tank.Velocity.X = networkState.VelocityX;
+                Tank.Velocity.Y = networkState.VelocityY;
+            }
+        }
+
+        public void ApplyUpdateState(TankNetworkState networkState, float deltaSeconds, bool force = false)
+        {
+            // NOOP:
+            // keyboard controller is controlled by a local player and
+            // the local player is authoritative over their own entity
+            // so we do not apply incoming states unless they are a new
+            // creation state.
+        }
+
+        public TankNetworkState GetState()
+        {
+            return new TankNetworkState()
+            {
+                MovementAngle = MovementAngle,
+                MovementMagnitude = MovementMagnitude,
+                AimAngle = AimAngle,
+                Firing = Firing,
+                X = Tank.X,
+                Y = Tank.Y,
+                VelocityX = Tank.Velocity.X,
+                VelocityY = Tank.Velocity.Y,
+            };
+        }
+
+        public void Destroy()
+        {
+            if (Tank != null)
+            {
+                Tank.Controller = null;
+                Tank.Destroy();
+                Tank = null;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using FlatRedBall.Forms.MVVM;
 using SignalRed.Common.Interfaces;
 using System;
+using TankMp.Entities;
 
 namespace TankMp.Models
 {
@@ -13,7 +14,7 @@ namespace TankMp.Models
         Playing = 4,
     }
 
-    public class PlayerStatusViewModel : ViewModel, INetworkEntity
+    public class PlayerStatusViewModel : ViewModel, ISignalRedEntity<PlayerStatusNetworkState>
     {
         bool destroyed = false;
 
@@ -35,7 +36,24 @@ namespace TankMp.Models
 
         public string OwnerClientId { get; set; }
         public string EntityId { get; set; }
-        public object GetState()
+
+        
+
+        public void ApplyCreationState(PlayerStatusNetworkState networkState, float deltaSeconds)
+        {
+            ApplyUpdateState(networkState, deltaSeconds, true);
+        }
+
+        public void ApplyUpdateState(PlayerStatusNetworkState networkState, float deltaSeconds, bool force = false)
+        {
+            Username = networkState.Username;
+            CurrentStatus = (PlayerJoinStatus)networkState.CurrentStatus;
+            Deaths = networkState.Deaths;
+            Kills = networkState.Kills;
+            Ping = networkState.Ping;
+        }
+
+        public PlayerStatusNetworkState GetState()
         {
             return new PlayerStatusNetworkState()
             {
@@ -46,18 +64,7 @@ namespace TankMp.Models
                 Ping = Ping,
             };
         }
-        public void ApplyState(object networkState, bool isReckoning = false)
-        {
-            var typedState = networkState as PlayerStatusNetworkState;
-            if(typedState != null)
-            {
-                Username = typedState.Username;
-                CurrentStatus = (PlayerJoinStatus)typedState.CurrentStatus;
-                Deaths = typedState.Deaths;
-                Kills = typedState.Kills;
-                Ping = typedState.Ping;
-            }
-        }
+
         public void Destroy()
         {
             destroyed = true;
