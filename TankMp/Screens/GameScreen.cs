@@ -42,8 +42,6 @@ namespace TankMp.Screens
 
         void CustomActivity(bool firstTimeCalled)
         {
-            CheckValidConnection();
-
             if(localController != null && localController.IsDestroyed)
             {
                 timeToRespawn -= TimeManager.SecondDifference;
@@ -85,6 +83,8 @@ namespace TankMp.Screens
             };
             SignalRedClient.Instance.CreateEntity(state);
         }
+
+
 
         private void EntityCreateReceived(EntityStateMessage message)
         {

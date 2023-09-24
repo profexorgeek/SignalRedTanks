@@ -97,6 +97,9 @@
       "Name": "Screens\\Level1"
     },
     {
+      "Name": "Screens\\NetworkedScreenBase"
+    },
+    {
       "Name": "Screens\\ServerLobby"
     }
   ],

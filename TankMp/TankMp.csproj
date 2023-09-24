@@ -269,6 +269,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>Level1Gum</Name>
     </None>
+    <None Include="content\gumproject\screens\networkedscreenbasegum.gusx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>NetworkedScreenBaseGum</Name>
+    </None>
     <None Include="content\gumproject\screens\serverlobbygum.gusx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>ServerLobbyGum</Name>
@@ -349,6 +353,7 @@
     <Compile Include="Forms\Screens\ConnectToServerGumForms.Generated.cs" />
     <Compile Include="Forms\Screens\GameScreenGumForms.Generated.cs" />
     <Compile Include="Forms\Screens\Level1GumForms.Generated.cs" />
+    <Compile Include="Forms\Screens\NetworkedScreenBaseGumForms.Generated.cs" />
     <Compile Include="Forms\Screens\ServerLobbyGumForms.Generated.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Game1.Generated.cs">
@@ -590,6 +595,10 @@
     <Compile Include="GumRuntimes\Menus\ServerLobbyRuntime.Generated.cs">
       <DependentUpon>ServerLobbyRuntime.cs</DependentUpon>
     </Compile>
+    <Compile Include="GumRuntimes\NetworkedScreenBaseGumRuntime.cs" />
+    <Compile Include="GumRuntimes\NetworkedScreenBaseGumRuntime.Generated.cs">
+      <DependentUpon>NetworkedScreenBaseGumRuntime.cs</DependentUpon>
+    </Compile>
     <Compile Include="GumRuntimes\NineSliceRuntime.Generated.cs" />
     <Compile Include="GumRuntimes\PolygonRuntime.Generated.cs" />
     <Compile Include="GumRuntimes\RectangleRuntime.Generated.cs" />
@@ -619,6 +628,10 @@
     <Compile Include="Screens\Level1.cs" />
     <Compile Include="Screens\Level1.Generated.cs">
       <DependentUpon>Level1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\NetworkedScreenBase.cs" />
+    <Compile Include="Screens\NetworkedScreenBase.Generated.cs">
+      <DependentUpon>NetworkedScreenBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\ServerLobby.cs" />
     <Compile Include="Screens\ServerLobby.Generated.cs">

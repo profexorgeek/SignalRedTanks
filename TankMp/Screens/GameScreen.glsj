@@ -3,6 +3,8 @@
     "GLUE"
   ],
   "Source": "GLUE",
+  "BaseScreen": "Screens\\NetworkedScreenBase",
+  "BaseElement": "Screens\\NetworkedScreenBase",
   "ReferencedFiles": [
     {
       "Name": "GumProject/Screens/GameScreenGum.gusx",

@@ -44,8 +44,6 @@ namespace TankMp.Screens
         void CustomDestroy() { }
         void CustomActivity(bool firstTimeCalled)
         {
-            DoNetworkMessages();
-
             if (InputManager.Keyboard.KeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
                 SendChat();
@@ -92,70 +90,33 @@ namespace TankMp.Screens
             });
         }
 
-        void DoNetworkMessages()
-        {
-            DoNetworkScreenMessages();
-            DoNetworkEntityMessages();
-            DoNetworkGenericMessages();
-        }
 
-        void DoNetworkScreenMessages()
+        protected override void ApplyGenericMessage(GenericMessage message)
         {
-            var message = SignalRedClient.Instance.GetCurrentScreen();
-            if (!string.IsNullOrEmpty(message.TargetScreen) &&
-                message.TargetScreen != this.GetType().FullName)
+            if (message.MessageKey == MessageKey)
             {
-                ScreenManager.MoveToScreen(message.TargetScreen);
+                GameState.Messages.Add(message.MessageValue);
             }
         }
 
-        void DoNetworkEntityMessages()
+        protected override void CreateEntity(EntityStateMessage message)
         {
-            var messageTuples = SignalRedClient.Instance.GetEntityMessages();
-            for(var i = 0; i < messageTuples.Count; i++)
-            {
-                var message = messageTuples[i].Item1;
-                var messageType = messageTuples[i].Item2;
-                switch(messageType)
-                {
-                    case SignalRedMessageType.Reckon:
-                        CreateOrUpdateEntity(message, true);
-                        break;
-                    case SignalRedMessageType.Create:
-                        CreateOrUpdateEntity(message);
-                        break;
-                    case SignalRedMessageType.Update:
-                        CreateOrUpdateEntity(message);
-                        break;
-                    case SignalRedMessageType.Delete:
-                        DeleteEntity(message);
-                        break;
-                    default:
-                        throw new Exception($"Unexpected entity message type: {messageType} {message.StateType}");
-                        break;
-                }
-            }
+            CreateOrUpdateEntity(message, true);
         }
 
-        void DoNetworkGenericMessages()
+        protected override void UpdateEntity(EntityStateMessage message, bool isReckonMessage = false)
         {
-            var messages = SignalRedClient.Instance.GetGenericMessages();
-            for(var i = 0; i < messages.Count; i++)
-            {
-                var message = messages[i];
-                if (message.MessageKey == MessageKey)
-                {
-                    GameState.Messages.Add(message.MessageValue);
-                }
-            }
+            CreateOrUpdateEntity(message, isReckonMessage);
         }
 
-
-
-        #region Networking Handlers
-        void ConnectionClosed(Exception message)
+        protected override void DeleteEntity(EntityStateMessage message)
         {
-            MoveToScreen(typeof(ConnectToServer).FullName);
+            var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
+            if (plyr != null)
+            {
+                GameState.Players.Remove(plyr);
+            }
+            GameState.UpdateStartableStatus();
         }
 
         void CreateOrUpdateEntity(EntityStateMessage message, bool force = false)
@@ -165,7 +126,7 @@ namespace TankMp.Screens
                 var state = message.GetState<PlayerStatusNetworkState>();
                 var existing = GameState.Players
                     .Where(p => p.EntityId == message.EntityId).FirstOrDefault();
-                if(existing != null)
+                if (existing != null)
                 {
                     existing.ApplyState(state, force);
                 }
@@ -178,7 +139,7 @@ namespace TankMp.Screens
                     GameState.Players.Add(plyr);
 
                     // if a new player joined, set our state back to not ready
-                    if(plyr != GameState.LocalPlayer)
+                    if (plyr != GameState.LocalPlayer)
                     {
                         SendReadyStatus(false);
                     }
@@ -187,44 +148,5 @@ namespace TankMp.Screens
 
             GameState.UpdateStartableStatus();
         }
-
-        void DeleteEntity(EntityStateMessage message)
-        {
-            var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
-            if (plyr != null)
-            {
-                GameState.Players.Remove(plyr);
-            }
-            GameState.UpdateStartableStatus();
-        }
-
-        //void EntityReckonReceived(List<EntityStateMessage> message)
-        //{
-        //    var incomingPlayers = message.Where(m => m.StateType == typeof(PlayerStatusNetworkState).FullName);
-
-        //    // set all known players to disconnected
-        //    foreach(var p in GameState.Players)
-        //    {
-        //        p.CurrentStatus = PlayerJoinStatus.Disconnected;
-        //    }
-
-        //    // now update from our incoming list
-        //    foreach (var msg in incomingPlayers)
-        //    {
-        //        EntityCreateOrUpdateReceived(msg);
-        //    }
-
-        //    // finally remove players that aren't connected
-        //    for (var i = GameState.Players.Count - 1; i > -1; i--)
-        //    {
-        //        if (GameState.Players[i].CurrentStatus == PlayerJoinStatus.Disconnected)
-        //        {
-        //            GameState.Players.RemoveAt(i);
-        //        }
-        //    }
-
-        //    GameState.UpdateStartableStatus();
-        //}
-        #endregion
     }
 }
