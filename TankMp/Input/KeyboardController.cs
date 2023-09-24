@@ -13,7 +13,7 @@ namespace TankMp.Input
 {
     public class KeyboardController : ITankController
     {
-        const float NetworkUpdateFrequencySeconds = 0.1f;
+        const float NetworkUpdateFrequencySeconds = 0.5f;
 
         Vector2 movementVector = Vector2.Zero;
         TankNetworkState recentState = new TankNetworkState();

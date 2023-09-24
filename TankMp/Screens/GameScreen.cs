@@ -28,7 +28,6 @@ namespace TankMp.Screens
 
         void CustomInitialize()
         {
-            CheckValidConnection();
             RequestTankSpawn();
         }
 
@@ -58,16 +57,6 @@ namespace TankMp.Screens
 
         }
 
-
-        void CheckValidConnection()
-        {
-            // something went wrong, return to the connection screen
-            if (SignalRedClient.Instance.Connected == false)
-            {
-                MoveToScreen(typeof(ConnectToServer).FullName);
-            }
-        }
-
         void RequestTankSpawn()
         {
             var state = new TankNetworkState()
@@ -85,8 +74,7 @@ namespace TankMp.Screens
         }
 
 
-
-        private void EntityCreateReceived(EntityStateMessage message)
+        protected override void CreateEntity(EntityStateMessage message)
         {
             if (message.StateType == typeof(TankNetworkState).FullName)
             {
@@ -108,21 +96,21 @@ namespace TankMp.Screens
             }
         }
 
-        private void EntityUpdateReceived(EntityStateMessage message)
+        protected override void UpdateEntity(EntityStateMessage message, bool isReckonMessage = false)
         {
             if (message.StateType == typeof(TankNetworkState).FullName)
             {
                 var state = message.GetState<TankNetworkState>();
                 var controller = GetControllerForEntityId(message.EntityId);
 
-                if(controller != null)
+                if (controller != null)
                 {
                     controller.ApplyState(state);
                 }
             }
         }
 
-        private void EntityDeleteReceived(EntityStateMessage message)
+        protected override void DeleteEntity(EntityStateMessage message)
         {
             if(message.StateType == typeof(TankNetworkState).FullName)
             {
@@ -144,12 +132,6 @@ namespace TankMp.Screens
             }
         }
 
-        
-
-        private void EntityReckonReceived(List<EntityStateMessage> message)
-        {
-            throw new System.NotImplementedException();
-        }
 
         ITankController? GetControllerForEntityId(string id)
         {

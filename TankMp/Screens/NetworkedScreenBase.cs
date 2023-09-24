@@ -9,7 +9,12 @@ namespace TankMp.Screens
 
         void CustomInitialize()
         {
-
+            // EARLY OUT: connection lost
+            if (SignalRedClient.Instance.Connected == false)
+            {
+                MoveToScreen(typeof(ConnectToServer).FullName);
+                return;
+            }
         }
 
         void CustomActivity(bool firstTimeCalled)
