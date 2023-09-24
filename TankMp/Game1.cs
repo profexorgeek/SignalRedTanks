@@ -71,6 +71,8 @@ namespace TankMp
         {
             FlatRedBallServices.Update(gameTime);
 
+            SignalRedClient.Instance.Update();
+
             FlatRedBall.Screens.ScreenManager.Activity();
 
             GeneratedUpdate(gameTime);
