@@ -14,10 +14,11 @@ namespace TankMp.Entities.Tanks
         const float MaxSpeed = 200;
         const float MaxDrag = 1.5f;
         const float MaxAcceleration = MaxSpeed / MaxDrag;
-        const float RotationToTargetAngleSeconds = 0.15f;
+        const float SecondsToLerpToState = 0.15f;
         const float FireRatePerSecond = 2f;
         ITankController controller;
 
+        float FrameLerp => TimeManager.SecondDifference / SecondsToLerpToState;
         public string OwnerClientId { get; set; }
         public string EntityId { get; set; }
 
@@ -49,23 +50,6 @@ namespace TankMp.Entities.Tanks
 
         }
 
-        public object GetState()
-        {
-            return new TankNetworkState
-            {
-                X = this.X,
-                Y = this.Y,
-                VelocityX = this.Velocity.X,
-                VelocityY = this.Velocity.Y,
-                AimAngle = this.TurretBaseInstance.RelativeRotationZ
-            };
-        }
-
-        public void ApplyState(object networkState, bool isReckoning = false)
-        {
-            
-        }
-
         void DoInput()
         {
             // EARLY OUT: no controller!
@@ -76,11 +60,10 @@ namespace TankMp.Entities.Tanks
             var throttle = Controller.MovementMagnitude.Clamp(-1f, 1f);
             var velocityAngle = (float)Math.Atan2(Velocity.Y, Velocity.X);
             var rotationToVelocityAngle = MathFunctions.AngleToAngle(RotationZ, velocityAngle);
-            var frameLerp = TimeManager.SecondDifference / RotationToTargetAngleSeconds;
 
             Acceleration.X = (float)(Math.Cos(Controller.MovementAngle) * (MaxAcceleration * throttle));
             Acceleration.Y = (float)(Math.Sin(Controller.MovementAngle) * (MaxAcceleration * throttle));
-            RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, frameLerp);
+            RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, FrameLerp);
             TurretBaseInstance.RelativeRotationZ = Controller.AimAngle;
         }
 

@@ -1,5 +1,8 @@
-﻿using SignalRed.Client;
+﻿using FlatRedBall;
+using Microsoft.Xna.Framework;
+using SignalRed.Client;
 using SignalRed.Common.Interfaces;
+using System;
 using System.Threading.Tasks;
 using TankMp.Entities;
 using TankMp.Entities.Tanks;
@@ -9,7 +12,12 @@ namespace TankMp.Input
 {
     public class NetworkController : ITankController, ISignalRedEntity<TankNetworkState>
     {
-        public TankNetworkState lastReceivedState = new TankNetworkState();
+        const float SecondsToLerpToState = 0.25f;
+
+        float FrameLerp => TimeManager.SecondDifference / SecondsToLerpToState;
+        TankNetworkState lastReceivedState = new TankNetworkState();
+        double lastReceivedTime = TimeManager.CurrentTime;
+        float lastReceivedDelta = float.MaxValue;
         TankBase tank;
 
 
@@ -40,7 +48,17 @@ namespace TankMp.Input
 
         public void Update()
         {
-            // NOOP
+            // constantly interpolate towards where we think we should be according to the
+            // last network update
+            if(Tank != null)
+            {
+                var secondsSinceLastStateSent = (float)(TimeManager.CurrentTime - lastReceivedTime - lastReceivedDelta);
+                var targetX = lastReceivedState.X + (lastReceivedState.VelocityX * secondsSinceLastStateSent);
+                var targetY = lastReceivedState.Y + (lastReceivedState.VelocityY * secondsSinceLastStateSent);
+
+                Tank.X = MathHelper.Lerp(Tank.X, targetX, FrameLerp);
+                Tank.Y = MathHelper.Lerp(Tank.Y, targetY, FrameLerp);
+            }
         }
 
         public void Destroy()
@@ -55,20 +73,21 @@ namespace TankMp.Input
 
         public void ApplyCreationState(TankNetworkState networkState, float deltaSeconds)
         {
-            ApplyUpdateState(networkState, deltaSeconds, true);
+            lastReceivedState = networkState;
+            lastReceivedTime = TimeManager.CurrentTime;
+            lastReceivedDelta = deltaSeconds;
+
+            Tank.X = networkState.X;
+            Tank.Y = networkState.Y;
         }
 
         public void ApplyUpdateState(TankNetworkState networkState, float deltaSeconds, bool force = false)
         {
             if (Tank != null)
             {
-                var typedState = networkState as TankNetworkState;
-                lastReceivedState = typedState;
-
-                Tank.X = typedState.X;
-                Tank.Y = typedState.Y;
-                Tank.Velocity.X = typedState.VelocityX;
-                Tank.Velocity.Y = typedState.VelocityY;
+                lastReceivedState = networkState;
+                lastReceivedTime = TimeManager.CurrentTime;
+                lastReceivedDelta = deltaSeconds;
             }
         }
 

@@ -14,7 +14,7 @@ namespace TankMp.Screens
     public partial class ServerLobby
     {
         const string MessageKey = "LobbyMessage";
-        const float ReckonFrequencySeconds = 1f;
+        const float ReckonFrequencySeconds = 5f;
         const float PingUpdateFrequency = 0.5f;
 
         float secondsToNextReckon = 0f;

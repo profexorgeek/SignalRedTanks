@@ -65,6 +65,9 @@ namespace TankMp
         {
             GameStateService.Instance.Initialize();
             SignalRedClient.Instance.Initialize();
+
+            // fake latency
+            SignalRedClient.Instance.DebugMaxSimulatedLatencyMilliseconds = 2000f;
         }
 
         protected override void Update(GameTime gameTime)
