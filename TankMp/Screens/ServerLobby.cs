@@ -162,10 +162,11 @@ namespace TankMp.Screens
 
         protected override void DeleteEntity(EntityStateMessage message)
         {
+            var state = message.GetState<PlayerStatusNetworkState>();
             var plyr = GameState.Players.Where(p => p.OwnerClientId == message.OwnerClientId).FirstOrDefault();
             if (plyr != null)
             {
-                plyr.Destroy();
+                plyr.Destroy(state, message.DeltaSeconds);
                 GameState.Players.Remove(plyr);
             }
             GameState.UpdateStartableStatus();

@@ -94,6 +94,16 @@ namespace TankMp.Input
             // creation state.
         }
 
+        public void Destroy(TankNetworkState networkState, float deltaSeconds)
+        {
+            if (Tank != null)
+            {
+                Tank.Controller = null;
+                Tank.Destroy();
+                Tank = null;
+            }
+        }
+
         public TankNetworkState GetState()
         {
             return new TankNetworkState()
@@ -109,14 +119,6 @@ namespace TankMp.Input
             };
         }
 
-        public void Destroy()
-        {
-            if (Tank != null)
-            {
-                Tank.Controller = null;
-                Tank.Destroy();
-                Tank = null;
-            }
-        }
+        
     }
 }

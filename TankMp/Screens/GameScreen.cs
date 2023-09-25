@@ -133,12 +133,11 @@ namespace TankMp.Screens
             {
                 var state = message.GetState<TankNetworkState>();
                 var controller = GetControllerForEntityId(message.EntityId);
-
                 if(controller != null)
                 {
                     // NOTE: this doesn't actually destroy the controller, it tells the controller
                     // to destroy its tank. The controller will stick around and respawn
-                    controller.Destroy();
+                    controller.Destroy(state, message.DeltaSeconds);
 
                     bool isLocal = controller.OwnerClientId == SignalRedClient.Instance.ClientId;
                     if (isLocal)
@@ -150,10 +149,11 @@ namespace TankMp.Screens
 
             if(message.StateType == typeof(BulletNetworkState).FullName)
             {
+                var state = message.GetState<BulletNetworkState>();
                 var bullet = BulletList.Where(b => b.EntityId == message.EntityId).FirstOrDefault();
                 if(bullet != null)
                 {
-                    bullet.Destroy();
+                    bullet.Destroy(state, message.DeltaSeconds);
                 }
             }
         }

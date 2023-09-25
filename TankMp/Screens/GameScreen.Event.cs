@@ -18,6 +18,9 @@ namespace TankMp.Screens
                 // so it can't be damaged for more than a frame
 
                 SignalRedClient.Instance.DeleteEntity(bulletBase);
+
+                // destroy this bullet immediately because it hit our own tank
+                bulletBase.Destroy();
             }
         }
         

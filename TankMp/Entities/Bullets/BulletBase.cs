@@ -43,7 +43,7 @@ namespace TankMp.Entities.Bullets
                 secondsToNextUpdate -= TimeManager.SecondDifference;
                 if(secondsToNextUpdate <= 0)
                 {
-                    SignalRedClient.Instance.UpdateEntity(this);
+                    //SignalRedClient.Instance.UpdateEntity(this);
                     secondsToNextUpdate = UpdateFreqSeconds;
                 }
             }
@@ -67,8 +67,8 @@ namespace TankMp.Entities.Bullets
         {
             var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
             var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
-            X = networkState.X;
-            Y = networkState.Y;
+            X = networkState.X + (xSpeed * deltaSeconds);
+            Y = networkState.Y + (ySpeed * deltaSeconds);
             Velocity.X = xSpeed;
             Velocity.Y = ySpeed;
             RotationZ = networkState.Angle;
@@ -100,6 +100,14 @@ namespace TankMp.Entities.Bullets
                 Y = this.Y,
                 Angle = this.RotationZ,
             };
+        }
+
+        public void Destroy(BulletNetworkState networkState, float deltaSeconds)
+        {
+            // move this back to where the destroy occurred
+            X = networkState.X;
+            Y = networkState.Y;
+            Destroy();
         }
     }
 }

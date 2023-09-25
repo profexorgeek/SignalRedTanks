@@ -61,7 +61,7 @@ namespace TankMp.Input
             }
         }
 
-        public void Destroy()
+        public void Destroy(TankNetworkState networkState, float deltaSeconds)
         {
             if (Tank != null)
             {

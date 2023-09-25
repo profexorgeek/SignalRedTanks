@@ -65,7 +65,7 @@ namespace TankMp.Models
             };
         }
 
-        public void Destroy()
+        public void Destroy(PlayerStatusNetworkState networkState, float deltaSeconds)
         {
             destroyed = true;
         }
