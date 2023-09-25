@@ -3,14 +3,15 @@ using Microsoft.Xna.Framework;
 using SignalRed.Client;
 using SignalRed.Common.Interfaces;
 using System;
+using TankMp.GumRuntimes;
 using TankMp.Models;
 
 namespace TankMp.Entities.Bullets
 {
     public partial class BulletBase : ISignalRedEntity<BulletNetworkState>
     {
-        const float InterpolationSeconds = 0.15f;
-        const float UpdateFreqSeconds = 0.5f;
+        const float InterpolationSeconds = 0.5f;
+        const float UpdateFreqSeconds = 0.7f;
         const float Speed = 300f;
         const float MaxLife = 4f;
 
@@ -45,8 +46,9 @@ namespace TankMp.Entities.Bullets
                     SignalRedClient.Instance.UpdateEntity(this);
                     secondsToNextUpdate = UpdateFreqSeconds;
                 }
-                RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
             }
+
+            RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
         }
 
         private void CustomDestroy()
@@ -65,10 +67,11 @@ namespace TankMp.Entities.Bullets
         {
             var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
             var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
-            this.X = networkState.X + (xSpeed * deltaSeconds);
-            this.Y = networkState.Y + (ySpeed * deltaSeconds);
+            X = networkState.X;
+            Y = networkState.Y;
             Velocity.X = xSpeed;
             Velocity.Y = ySpeed;
+            RotationZ = networkState.Angle;
             secondsUntilDeath = MaxLife - deltaSeconds;
             started = true;
         }
@@ -81,8 +84,9 @@ namespace TankMp.Entities.Bullets
                 var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
                 var xTarget = networkState.X + (xSpeed * deltaSeconds);
                 var yTarget = networkState.Y + (ySpeed * deltaSeconds);
-                this.X = MathHelper.Lerp(this.X, xTarget, FrameLerp);
-                this.Y = MathHelper.Lerp(this.Y, yTarget, FrameLerp);
+                X = MathHelper.Lerp(this.X, xTarget, FrameLerp);
+                Y = MathHelper.Lerp(this.Y, yTarget, FrameLerp);
+                RotationZ = networkState.Angle;
                 Velocity.X = xSpeed;
                 Velocity.Y = ySpeed;
             }

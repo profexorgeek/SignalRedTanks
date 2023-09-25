@@ -71,13 +71,54 @@
         {
           "Type": "Microsoft.Xna.Framework.Color",
           "Member": "Color",
-          "Value": "Red",
+          "Value": "Pink",
           "Time": 0.0
         },
         {
           "Type": "float",
           "Member": "Radius",
-          "Value": 6.0,
+          "Value": 4.0,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 2,
+      "SourceFile": "Circle",
+      "HasPublicProperty": true,
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "DirectionIndicator",
+      "SourceClassType": "FlatRedBall.Math.Geometry.Circle",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "Radius",
+          "Value": 2.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": 4.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "Microsoft.Xna.Framework.Color",
+          "Member": "Color",
+          "Value": "Red",
           "Time": 0.0
         }
       ],
