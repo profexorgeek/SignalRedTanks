@@ -1,24 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using FlatRedBall;
-using FlatRedBall.Input;
-using FlatRedBall.Instructions;
-using FlatRedBall.AI.Pathfinding;
-using FlatRedBall.Graphics.Animation;
-using FlatRedBall.Graphics.Particle;
-using FlatRedBall.Math.Geometry;
 using Microsoft.Xna.Framework;
+using SignalRed.Client;
+using SignalRed.Common.Interfaces;
+using System;
+using TankMp.Models;
 
 namespace TankMp.Entities.Bullets
 {
-    public partial class BulletBase
+    public partial class BulletBase : ISignalRedEntity<BulletNetworkState>
     {
-        /// <summary>
-        /// Initialization logic which is executed only one time for this Entity (unless the Entity is pooled).
-        /// This method is called when the Entity is added to managers. Entities which are instantiated but not
-        /// added to managers will not have this method called.
-        /// </summary>
+        const float InterpolationSeconds = 0.15f;
+        const float UpdateFreqSeconds = 0.5f;
+        const float Speed = 300f;
+        const float MaxLife = 4f;
+
+        float secondsUntilDeath;
+        float secondsToNextUpdate;
+        bool started = false;
+        float FrameLerp = TimeManager.SecondDifference / InterpolationSeconds;
+
+        public string OwnerClientId { get; set; }
+        public string EntityId { get; set; }
+        public bool IsLocallyOwned => SignalRedClient.Instance.ClientId == OwnerClientId;
+
         private void CustomInitialize()
         {
 
@@ -27,8 +31,22 @@ namespace TankMp.Entities.Bullets
 
         private void CustomActivity()
         {
+            if (started && IsLocallyOwned)
+            {
+                secondsUntilDeath -= TimeManager.SecondDifference;
+                if(secondsUntilDeath <= 0)
+                {
+                    SignalRedClient.Instance.DeleteEntity(this);
+                }
 
-
+                secondsToNextUpdate -= TimeManager.SecondDifference;
+                if(secondsToNextUpdate <= 0)
+                {
+                    SignalRedClient.Instance.UpdateEntity(this);
+                    secondsToNextUpdate = UpdateFreqSeconds;
+                }
+                RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
+            }
         }
 
         private void CustomDestroy()
@@ -41,6 +59,43 @@ namespace TankMp.Entities.Bullets
         {
 
 
+        }
+
+        public void ApplyCreationState(BulletNetworkState networkState, float deltaSeconds)
+        {
+            var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
+            var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
+            this.X = networkState.X + (xSpeed * deltaSeconds);
+            this.Y = networkState.Y + (ySpeed * deltaSeconds);
+            Velocity.X = xSpeed;
+            Velocity.Y = ySpeed;
+            secondsUntilDeath = MaxLife - deltaSeconds;
+            started = true;
+        }
+
+        public void ApplyUpdateState(BulletNetworkState networkState, float deltaSeconds, bool force = false)
+        {
+            if(!IsLocallyOwned)
+            {
+                var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
+                var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
+                var xTarget = networkState.X + (xSpeed * deltaSeconds);
+                var yTarget = networkState.Y + (ySpeed * deltaSeconds);
+                this.X = MathHelper.Lerp(this.X, xTarget, FrameLerp);
+                this.Y = MathHelper.Lerp(this.Y, yTarget, FrameLerp);
+                Velocity.X = xSpeed;
+                Velocity.Y = ySpeed;
+            }
+        }
+
+        public BulletNetworkState GetState()
+        {
+            return new BulletNetworkState()
+            {
+                X = this.X,
+                Y = this.Y,
+                Angle = this.RotationZ,
+            };
         }
     }
 }

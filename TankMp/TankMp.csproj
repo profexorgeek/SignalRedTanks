@@ -611,6 +611,7 @@
     <Compile Include="Input\ITankController.cs" />
     <Compile Include="Input\KeyboardController.cs" />
     <Compile Include="Input\NetworkController.cs" />
+    <Compile Include="Models\BulletModels.cs" />
     <Compile Include="Models\GameStateModels.cs" />
     <Compile Include="Models\PlayerStatusModels.cs" />
     <Compile Include="Models\TankModels.cs" />
@@ -622,9 +623,13 @@
       <DependentUpon>ConnectToServer.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Screens\GameScreen.Event.cs">
+      <DependentUpon>GameScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\GameScreen.Generated.cs">
       <DependentUpon>GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\GameScreen.Generated.Event.cs" />
     <Compile Include="Screens\Level1.cs" />
     <Compile Include="Screens\Level1.Generated.cs">
       <DependentUpon>Level1.cs</DependentUpon>

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using FlatRedBall;
 using SignalRed.Common.Interfaces;
 using TankMp.Models;
+using SignalRed.Client;
 
 namespace TankMp.Entities.Tanks
 {
@@ -15,12 +16,13 @@ namespace TankMp.Entities.Tanks
         const float MaxDrag = 1.5f;
         const float MaxAcceleration = MaxSpeed / MaxDrag;
         const float SecondsToLerpToState = 0.15f;
-        const float FireRatePerSecond = 2f;
+        const float SecondsBetweenShots = 1.5f;
+        float timeToNextShot = 0;
+
+        bool LocallyOwned => SignalRedClient.Instance.ClientId == Controller.OwnerClientId;
         ITankController controller;
 
         float FrameLerp => TimeManager.SecondDifference / SecondsToLerpToState;
-        public string OwnerClientId { get; set; }
-        public string EntityId { get; set; }
 
 
         public ITankController Controller { get; set; }
@@ -65,6 +67,22 @@ namespace TankMp.Entities.Tanks
             Acceleration.Y = (float)(Math.Sin(Controller.MovementAngle) * (MaxAcceleration * throttle));
             RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, FrameLerp);
             TurretBaseInstance.RelativeRotationZ = Controller.AimAngle;
+
+            if(LocallyOwned)
+            {
+                timeToNextShot -= TimeManager.SecondDifference;
+                if(timeToNextShot <= 0 && Controller.Firing)
+                {
+                    SignalRedClient.Instance
+                        .CreateEntity<BulletNetworkState>(new BulletNetworkState()
+                    {
+                            X = TurretBaseInstance.Muzzle.X,
+                            Y = TurretBaseInstance.Muzzle.Y,
+                            Angle = TurretBaseInstance.RotationZ,
+                    });
+                    timeToNextShot = SecondsBetweenShots;
+                }
+            }
         }
 
         

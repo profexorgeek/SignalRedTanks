@@ -76,6 +76,7 @@ namespace TankMp.Screens
 
         protected override void CreateEntity(EntityStateMessage message)
         {
+            // tank creation
             if (message.StateType == typeof(TankNetworkState).FullName)
             {
                 var state = message.GetState<TankNetworkState>();
@@ -91,6 +92,16 @@ namespace TankMp.Screens
                     controller.ApplyUpdateState(state, message.DeltaSeconds);
                 }
             }
+
+            // bullet creation
+            else if(message.StateType == typeof(BulletNetworkState).FullName)
+            {
+                var state = message.GetState<BulletNetworkState>();
+                var bullet = BulletBaseFactory.CreateNew();
+                bullet.EntityId = message.EntityId;
+                bullet.OwnerClientId = message.OwnerClientId;
+                bullet.ApplyCreationState(state, message.DeltaSeconds);
+            }
         }
 
         protected override void UpdateEntity(EntityStateMessage message, bool isReckonMessage = false)
@@ -102,6 +113,16 @@ namespace TankMp.Screens
                 if (controller != null)
                 {
                     controller.ApplyUpdateState(state, message.DeltaSeconds);
+                }
+            }
+
+            else if(message.StateType == typeof(BulletNetworkState).FullName)
+            {
+                var state = message.GetState<BulletNetworkState>();
+                var bullet = BulletList.Where(b => b.EntityId == message.EntityId).FirstOrDefault();
+                if(bullet != null)
+                {
+                    bullet.ApplyUpdateState(state, message.DeltaSeconds);
                 }
             }
         }
@@ -124,6 +145,15 @@ namespace TankMp.Screens
                     {
                         timeToRespawn = RespawnSeconds;
                     }
+                }
+            }
+
+            if(message.StateType == typeof(BulletNetworkState).FullName)
+            {
+                var bullet = BulletList.Where(b => b.EntityId == message.EntityId).FirstOrDefault();
+                if(bullet != null)
+                {
+                    bullet.Destroy();
                 }
             }
         }

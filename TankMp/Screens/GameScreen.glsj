@@ -307,9 +307,77 @@
       "SourceFile": "Collision Relationship",
       "AttachToContainer": true,
       "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "BulletsVsSolid",
+      "SourceClassType": "FlatRedBall.Math.Collision.CollidableListVsTileShapeCollectionRelationship<Entities.Bullets.BulletBase>",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        },
+        {
+          "Name": "IsCollisionActive",
+          "Value": true
+        },
+        {
+          "Name": "IsAutomaticallyApplyPhysicsChecked",
+          "Value": true
+        },
+        {
+          "Name": "FirstCollisionMass",
+          "Value": 0.0
+        },
+        {
+          "Name": "SecondCollisionMass",
+          "Value": 1.0
+        },
+        {
+          "Name": "SoftCollisionCoefficient",
+          "Value": 1.0
+        },
+        {
+          "Name": "CollisionElasticity",
+          "Value": 1.0
+        },
+        {
+          "Name": "FirstCollisionName",
+          "Value": "BulletList"
+        },
+        {
+          "Name": "FirstSubCollisionSelectedItem",
+          "Value": "CircleInstance"
+        },
+        {
+          "Name": "SecondCollisionName",
+          "Value": "SolidCollision"
+        },
+        {
+          "Name": "CollisionType",
+          "Value": 2
+        }
+      ],
+      "InstructionSaves": [],
+      "SourceType": 2,
+      "SourceFile": "Collision Relationship",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
     }
   ],
   "Name": "Screens\\GameScreen",
+  "Events": [
+    {
+      "EventName": "BulletsVsSolidCollided",
+      "SourceObject": "BulletsVsSolid",
+      "SourceObjectEvent": "CollisionOccurred"
+    }
+  ],
   "CustomClassesForExport": [],
   "IsAbstract": true
 }
