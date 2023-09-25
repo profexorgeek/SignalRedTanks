@@ -1,15 +1,6 @@
-using System;
-using FlatRedBall;
-using FlatRedBall.Input;
-using FlatRedBall.Instructions;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Specialized;
-using FlatRedBall.Audio;
-using FlatRedBall.Screens;
-using TankMp.Entities.Bullets;
-using TankMp.Entities.Tanks;
-using TankMp.Screens;
 using FlatRedBall.Math;
+using SignalRed.Client;
+using System;
 
 namespace TankMp.Screens
 {
@@ -18,6 +9,16 @@ namespace TankMp.Screens
         void OnBulletsVsSolidCollided (Entities.Bullets.BulletBase bulletBase, FlatRedBall.TileCollisions.TileShapeCollection tileShapeCollection) 
         {
             bulletBase.RotationZ = (float)MathFunctions.RegulateAngle(bulletBase.RotationZ + Math.PI);
+        }
+        void OnBulletsVsTanksCollided (Entities.Bullets.BulletBase bulletBase, Entities.Tanks.TankBase tankBase) 
+        {
+            if(bulletBase.OwnerClientId != tankBase.Controller.OwnerClientId && tankBase.LocallyOwned)
+            {
+                // TODO: damage tank and mark that it has taken damage from this source
+                // so it can't be damaged for more than a frame
+
+                SignalRedClient.Instance.DeleteEntity(bulletBase);
+            }
         }
         
     }

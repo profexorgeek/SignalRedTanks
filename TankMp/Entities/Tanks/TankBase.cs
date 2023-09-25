@@ -16,10 +16,10 @@ namespace TankMp.Entities.Tanks
         const float MaxDrag = 1.5f;
         const float MaxAcceleration = MaxSpeed / MaxDrag;
         const float SecondsToLerpToState = 0.15f;
-        const float SecondsBetweenShots = 1.5f;
+        const float ReloadSeconds = 0.2f;
         float timeToNextShot = 0;
 
-        bool LocallyOwned => SignalRedClient.Instance.ClientId == Controller.OwnerClientId;
+        public bool LocallyOwned => SignalRedClient.Instance.ClientId == Controller.OwnerClientId;
         ITankController controller;
 
         float FrameLerp => TimeManager.SecondDifference / SecondsToLerpToState;
@@ -80,7 +80,7 @@ namespace TankMp.Entities.Tanks
                             Y = TurretBaseInstance.Muzzle.Y,
                             Angle = TurretBaseInstance.RotationZ,
                     });
-                    timeToNextShot = SecondsBetweenShots;
+                    timeToNextShot = ReloadSeconds;
                 }
             }
         }
