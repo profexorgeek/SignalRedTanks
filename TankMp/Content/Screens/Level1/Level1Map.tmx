@@ -1,12 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="16" tileheight="16" infinite="0">
-  <tileset tilecount="0" columns="0" source="../../StandardTileset.tsx" firstgid="1">
-    <wangsets />
-  </tileset>
-  <layer name="GameplayLayer" id="0" tintcolor="#ffffff" opacity="1" visible="1" parallaxx="1" parallaxy="1" offsetx="0" offsety="0" width="32" height="32">
-    <properties />
-    <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAACuzSsQkAQAzDQHn/pb/JDvpCAteBcAMmz2q37jv1f/KHV/7IH175I3945Y/84ZU/8ofXL/7MPQAAAP//AwBBllPFABAAAA==
-<length>1024</length></data>
-  </layer>
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="../../StandardTileset.tsx"/>
+ <tileset firstgid="1025" source="../../GlobalContent/TankMpSprites.tsx"/>
+ <layer id="2" name="Ground" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACrVWbZKDIAxtFW1n9ABYa8+2R92jbUCj4RkC7kx/ZKAV8kI+XtJMt1sTZF5X52l96dL57SxJOx/7Ru6nsh5NH59vSe5v2oO0JHdx565gSl05PYm+zPluoRXELWcbStiaHpZ2OfDb6Tjfe4E52za0ig+kLnm/e6V7xt/tNWxVbci8P+LDnYDnNnxeGT9n74PsenrQM599p+J/6OzbfkeCD99CDB70/3My7mZy2QWdvuxPC1+LPcbAqo2cTvk+C9/C5vsDyej1nCjh17yf68CJ3JEy0L1xAn1bLKx8dsFnlB/tR+Ab+dIp2No3jAnWfnhPwI644W0kHeS/hYv1W1OrHMvkzRsu8yf6vxOx72nfL7cfWn9LOJZNMTbizSW+0OLVVNR0LodVvsi8n++hz2JNgw0hL0ux2GOe6Vlq/Sl5svPKRT+w79HvFr52J9iO3Na/V8H6lL81rpScefK/8FfJ3n6TK3WJ/R/xLX9pvbLElWZcAH/vy5kZI8cV0gazb2BcAD9yxXL0E45RMptldPe+DtfCT76JvlaazWo5g+2Q88+J/16rDzrInSu4CWdciL/ly5o8Q55VuUWbv7S3AF5Nz0GetXQn+AanabkT/CzPs79k7chaxdkzmX8Fp8UevXF6rAXwwUD/jyI/TnYt55zlmR5jepr/rRlkXu0aaB2VPEjqvzJnd/9LXt9scHPqq1xe/of7klhJbhU2WL2efanlhVmbwJHaTBBsaHxqx7fE6nFsx7clcMQfv944RwAQAAA=
+  </data>
+ </layer>
+ <layer id="1" name="GameplayLayer" width="32" height="32" visible="0" tintcolor="#ffffff">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACs2WUQ7AIAhD9f6X3ucIQdNiQZsYp2M85pgyxq8JNFSIrxnYIz5RNmLH2CO2rC/bo9oxst+IlZLP3nuFH+WyMpcY+Riq+dGzL/BvrT+j7J6qZNtxJ3eVMx18Zt7bnMaZ4Z+cv5EfNq7V/5XlMzWFYn9H4zqd7+QrhZx/lXuVsuar4lf6rlzTm/zoupPPvr+6XmDsbK/yiypTsyrlc+VGLeTHnXGwe29F+wD+emVaABAAAA==
+  </data>
+ </layer>
+ <layer id="3" name="Entities" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAACu2USwqAMAwFs9B+1CQ9Yo/q0Xw7EQVx0aZIBmbTlk5WIXKcf1MW2hUKZNi9n9GHAjn373+FZyKBOhv1A/pQw/V8Cs/vrRhtHsdxxqPVnuCIPQk1tvn/tZ/Qh5rud74bT8pKtWxUrfqKvhr2BX0x7DP6bNh3nFE5ACnbAKgAEAAA
+  </data>
+ </layer>
 </map>

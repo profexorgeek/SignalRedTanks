@@ -5,6 +5,14 @@
   "Source": "GLUE",
   "CreatedByOtherEntities": true,
   "Is2D": true,
+  "ReferencedFiles": [
+    {
+      "Name": "GlobalContent/EntityAnimations.achx",
+      "IsSharedStatic": true,
+      "RuntimeType": "FlatRedBall.Graphics.Animation.AnimationChainList",
+      "ProjectsToExcludeFrom": []
+    }
+  ],
   "CustomVariables": [
     {
       "Properties": [
@@ -53,7 +61,7 @@
   ],
   "NamedObjects": [
     {
-      "InstanceName": "CircleInstance",
+      "InstanceName": "BulletCollision",
       "SourceClassType": "FlatRedBall.Math.Geometry.Circle",
       "Properties": [
         {
@@ -79,6 +87,12 @@
           "Member": "Radius",
           "Value": 4.0,
           "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "Visible",
+          "Value": false,
+          "Time": 0.0
         }
       ],
       "SourceType": 2,
@@ -88,8 +102,8 @@
       "GenerateTimedEmit": true
     },
     {
-      "InstanceName": "DirectionIndicator",
-      "SourceClassType": "FlatRedBall.Math.Geometry.Circle",
+      "InstanceName": "BulletSprite",
+      "SourceClassType": "FlatRedBall.Sprite",
       "Properties": [
         {
           "Name": "AssociateWithFactory",
@@ -105,26 +119,31 @@
       "InstructionSaves": [
         {
           "Type": "float",
-          "Member": "Radius",
-          "Value": 2.0,
+          "Member": "TextureScale",
+          "Value": 1.0,
           "Time": 0.0
         },
         {
-          "Type": "float",
-          "Member": "X",
-          "Value": 4.0,
+          "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
+          "Member": "AnimationChains",
+          "Value": "EntityAnimations",
           "Time": 0.0
         },
         {
-          "Type": "Microsoft.Xna.Framework.Color",
-          "Member": "Color",
-          "Value": "Red",
+          "Type": "string",
+          "Member": "CurrentChainName",
+          "Value": "TankShot",
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "UseAnimationRelativePosition",
+          "Value": false,
           "Time": 0.0
         }
       ],
       "SourceType": 2,
-      "SourceFile": "Circle",
-      "HasPublicProperty": true,
+      "SourceFile": "Sprite",
       "AttachToContainer": true,
       "GenerateTimedEmit": true
     }

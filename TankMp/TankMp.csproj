@@ -25,6 +25,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>TopDownValuesStatic</Name>
     </None>
+    <None Include="content\globalcontent\entityanimations.achx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>EntityAnimations</Name>
+    </None>
+    <None Include="content\globalcontent\tankmpsprites.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>tankmpsprites</Name>
+    </None>
+    <None Include="content\globalcontent\tankmpsprites.tsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>tankmpsprites</Name>
+    </None>
     <None Include="content\gumproject\components\controls\buttonclose.gucx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>buttonclose</Name>

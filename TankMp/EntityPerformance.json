@@ -11,20 +11,6 @@
       ]
     },
     {
-      "Name": "Entities\\Tanks\\TankBase",
-      "SelectedProperties": [],
-      "InstanceManagementValuesList": [
-        {
-          "SelectedProperties": [],
-          "Name": "BodyCollision"
-        },
-        {
-          "SelectedProperties": [],
-          "Name": "TurretBaseInstance"
-        }
-      ]
-    },
-    {
       "Name": "Entities\\Tanks\\TurretBase",
       "SelectedProperties": [],
       "InstanceManagementValuesList": [
@@ -35,6 +21,50 @@
         {
           "SelectedProperties": [],
           "Name": "TurretCircle"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "Muzzle"
+        }
+      ]
+    },
+    {
+      "Name": "Entities\\Tanks\\TankBase",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "BodyCollision"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "Turret"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "Body"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "TreadLeft"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "TreadRight"
+        }
+      ]
+    },
+    {
+      "Name": "Entities\\Bullets\\BulletBase",
+      "SelectedProperties": [],
+      "InstanceManagementValuesList": [
+        {
+          "SelectedProperties": [],
+          "Name": "BulletCollision"
+        },
+        {
+          "SelectedProperties": [],
+          "Name": "BulletSprite"
         }
       ]
     }

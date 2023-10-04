@@ -352,7 +352,7 @@
         },
         {
           "Name": "FirstSubCollisionSelectedItem",
-          "Value": "CircleInstance"
+          "Value": "BulletCollision"
         },
         {
           "Name": "SecondCollisionName",
@@ -361,6 +361,9 @@
         {
           "Name": "CollisionType",
           "Value": 2
+        },
+        {
+          "Name": "SecondSubCollisionSelectedItem"
         }
       ],
       "InstructionSaves": [],
@@ -413,7 +416,7 @@
         },
         {
           "Name": "FirstSubCollisionSelectedItem",
-          "Value": "CircleInstance"
+          "Value": "BulletCollision"
         },
         {
           "Name": "SecondCollisionName",

@@ -12,6 +12,12 @@
       "HasPublicProperty": true,
       "CreatesDictionary": true,
       "ProjectsToExcludeFrom": []
+    },
+    {
+      "Name": "GlobalContent/EntityAnimations.achx",
+      "IsSharedStatic": true,
+      "RuntimeType": "FlatRedBall.Graphics.Animation.AnimationChainList",
+      "ProjectsToExcludeFrom": []
     }
   ],
   "CustomVariables": [
@@ -87,13 +93,19 @@
           "Type": "List<Vector2>",
           "Member": "Points",
           "Value": [
-            "-20, 12",
-            "20, 12",
-            "24, 0",
-            "20, -12",
-            "-20, -12",
-            "-20, 12"
+            "-15, 12",
+            "15, 12",
+            "16, 0",
+            "15, -12",
+            "-15, -12",
+            "-15, 12"
           ],
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "Visible",
+          "Value": false,
           "Time": 0.0
         }
       ],
@@ -104,7 +116,7 @@
       "GenerateTimedEmit": true
     },
     {
-      "InstanceName": "TurretBaseInstance",
+      "InstanceName": "Turret",
       "SourceClassType": "Entities\\Tanks\\TurretBase",
       "Properties": [
         {
@@ -118,9 +130,196 @@
           "Type": "SourceType"
         }
       ],
-      "InstructionSaves": [],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "Z",
+          "Value": 1.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": -4.0,
+          "Time": 0.0
+        }
+      ],
       "SourceType": 1,
       "SourceFile": "Entities/Tanks/TurretBase",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "Body",
+      "SourceClassType": "FlatRedBall.Sprite",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
+          "Member": "AnimationChains",
+          "Value": "EntityAnimations",
+          "Time": 0.0
+        },
+        {
+          "Type": "string",
+          "Member": "CurrentChainName",
+          "Value": "TankBodies",
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "Animate",
+          "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "UseAnimationRelativePosition",
+          "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Z",
+          "Value": 0.5,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 2,
+      "SourceFile": "Sprite",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "TreadLeft",
+      "SourceClassType": "FlatRedBall.Sprite",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
+          "Member": "AnimationChains",
+          "Value": "EntityAnimations",
+          "Time": 0.0
+        },
+        {
+          "Type": "string",
+          "Member": "CurrentChainName",
+          "Value": "TankTreadLeft",
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "UseAnimationRelativePosition",
+          "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Y",
+          "Value": 9.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Z",
+          "Value": -0.5,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 2,
+      "SourceFile": "Sprite",
+      "AttachToContainer": true,
+      "GenerateTimedEmit": true
+    },
+    {
+      "InstanceName": "TreadRight",
+      "SourceClassType": "FlatRedBall.Sprite",
+      "Properties": [
+        {
+          "Name": "AssociateWithFactory",
+          "Value": true,
+          "Type": "Boolean"
+        },
+        {
+          "Name": "SourceType",
+          "Value": 2,
+          "Type": "SourceType"
+        }
+      ],
+      "InstructionSaves": [
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
+          "Member": "AnimationChains",
+          "Value": "EntityAnimations",
+          "Time": 0.0
+        },
+        {
+          "Type": "string",
+          "Member": "CurrentChainName",
+          "Value": "TankTreadRight",
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "UseAnimationRelativePosition",
+          "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Y",
+          "Value": -9.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "Z",
+          "Value": -0.5,
+          "Time": 0.0
+        }
+      ],
+      "SourceType": 2,
+      "SourceFile": "Sprite",
       "AttachToContainer": true,
       "GenerateTimedEmit": true
     }

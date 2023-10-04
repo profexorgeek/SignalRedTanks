@@ -1,12 +1,11 @@
-using FlatRedBall.Math;
-using TankMp.Input;
-using NarfoxGameTools.Extensions;
-using System;
-using Microsoft.Xna.Framework;
 using FlatRedBall;
-using SignalRed.Common.Interfaces;
-using TankMp.Models;
+using FlatRedBall.Math;
+using Microsoft.Xna.Framework;
+using NarfoxGameTools.Extensions;
 using SignalRed.Client;
+using System;
+using TankMp.Input;
+using TankMp.Models;
 
 namespace TankMp.Entities.Tanks
 {
@@ -20,19 +19,14 @@ namespace TankMp.Entities.Tanks
         float timeToNextShot = 0;
 
         public bool LocallyOwned => SignalRedClient.Instance.ClientId == Controller.OwnerClientId;
-        ITankController controller;
-
         float FrameLerp => TimeManager.SecondDifference / SecondsToLerpToState;
-
-
         public ITankController Controller { get; set; }
-
         
 
         private void CustomInitialize()
         {
             Drag = MaxDrag;
-            TurretBaseInstance.ParentRotationChangesRotation = false;
+            Turret.ParentRotationChangesRotation = false;
         }
 
         private void CustomActivity()
@@ -66,7 +60,7 @@ namespace TankMp.Entities.Tanks
             Acceleration.X = (float)(Math.Cos(Controller.MovementAngle) * (MaxAcceleration * throttle));
             Acceleration.Y = (float)(Math.Sin(Controller.MovementAngle) * (MaxAcceleration * throttle));
             RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, FrameLerp);
-            TurretBaseInstance.RelativeRotationZ = Controller.AimAngle;
+            Turret.RelativeRotationZ = Controller.AimAngle;
 
             if(LocallyOwned)
             {
@@ -76,9 +70,9 @@ namespace TankMp.Entities.Tanks
                     SignalRedClient.Instance
                         .CreateEntity<BulletNetworkState>(new BulletNetworkState()
                     {
-                            X = TurretBaseInstance.Muzzle.X,
-                            Y = TurretBaseInstance.Muzzle.Y,
-                            Angle = TurretBaseInstance.RotationZ,
+                            X = Turret.Muzzle.X,
+                            Y = Turret.Muzzle.Y,
+                            Angle = Turret.RotationZ,
                     });
                     timeToNextShot = ReloadSeconds;
                 }

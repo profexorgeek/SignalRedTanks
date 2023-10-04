@@ -48,6 +48,20 @@
       "DestroyOnUnload": false,
       "HasPublicProperty": true,
       "ProjectsToExcludeFrom": []
+    },
+    {
+      "Name": "GlobalContent/TankMpSprites.png",
+      "IsSharedStatic": true,
+      "DestroyOnUnload": false,
+      "HasPublicProperty": true,
+      "ProjectsToExcludeFrom": []
+    },
+    {
+      "Name": "GlobalContent/EntityAnimations.achx",
+      "IsSharedStatic": true,
+      "DestroyOnUnload": false,
+      "HasPublicProperty": true,
+      "ProjectsToExcludeFrom": []
     }
   ],
   "GlobalContentSettingsSave": {},
@@ -133,7 +147,7 @@
     "AspectRatioWidth": 16.0,
     "AspectRatioHeight": 9.0,
     "SupportLandscape": true,
-    "Scale": 100,
+    "Scale": 200,
     "ScaleGum": 100,
     "DominantInternalCoordinates": 1,
     "TextureFilter": 1
