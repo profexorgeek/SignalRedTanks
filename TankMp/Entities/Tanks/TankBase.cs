@@ -14,8 +14,10 @@ namespace TankMp.Entities.Tanks
         const float MaxSpeed = 200;
         const float MaxDrag = 1.5f;
         const float MaxAcceleration = MaxSpeed / MaxDrag;
-        const float SecondsToLerpToState = 0.15f;
+        const float SecondsToLerpToState = 0.2f;
         const float ReloadSeconds = 0.2f;
+        const float AnimationScaledSpeed = 10f;
+
         float timeToNextShot = 0;
 
         public bool LocallyOwned => SignalRedClient.Instance.ClientId == Controller.OwnerClientId;
@@ -56,13 +58,25 @@ namespace TankMp.Entities.Tanks
             var throttle = Controller.MovementMagnitude.Clamp(-1f, 1f);
             var velocityAngle = (float)Math.Atan2(Velocity.Y, Velocity.X);
             var rotationToVelocityAngle = MathFunctions.AngleToAngle(RotationZ, velocityAngle);
+            var rotationChangeThisFrame = MathHelper.Lerp(0, rotationToVelocityAngle, FrameLerp);
+            var rotationPercentThisFrame = (float)(rotationChangeThisFrame / (Math.PI * 2f));
+            var treadCircumference = (float)Math.Pow(TreadLeft.RelativePosition.Y, 2f);
+            var linearVelocity = Velocity.Length();
+            var velocityMagnitude = linearVelocity / MaxSpeed;
 
             Acceleration.X = (float)(Math.Cos(Controller.MovementAngle) * (MaxAcceleration * throttle));
             Acceleration.Y = (float)(Math.Sin(Controller.MovementAngle) * (MaxAcceleration * throttle));
-            RotationZ += MathHelper.Lerp(0, rotationToVelocityAngle, FrameLerp);
+            RotationZ += rotationChangeThisFrame;
             Turret.RelativeRotationZ = Controller.AimAngle;
 
-            if(LocallyOwned)
+            // base tread animation uses throttle, then scale speed down based on rotation direction
+            FlatRedBall.Debugging.Debugger.CommandLineWrite("Tread left scale:" + rotationChangeThisFrame);
+            TreadLeft.AnimationSpeed = velocityMagnitude * AnimationScaledSpeed;
+            TreadLeft.AnimationSpeed *= Math.Sign(rotationChangeThisFrame) < 0 ? 1.35f : 0.75f;
+            TreadRight.AnimationSpeed = velocityMagnitude * AnimationScaledSpeed;
+            TreadRight.AnimationSpeed *= Math.Sign(rotationChangeThisFrame) > 0 ? 1.35f : 0.75f;
+
+            if (LocallyOwned)
             {
                 timeToNextShot -= TimeManager.SecondDifference;
                 if(timeToNextShot <= 0 && Controller.Firing)

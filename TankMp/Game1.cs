@@ -78,8 +78,6 @@ namespace TankMp
             FlatRedBallServices.Update(gameTime);
 
             SignalRedClient.Instance.Update();
-            FlatRedBall.Debugging.Debugger.Write($"Time: {SignalRedClient.Instance.ServerTime} Ping: {SignalRedClient.Instance.Ping}");
-
             FlatRedBall.Screens.ScreenManager.Activity();
 
             GeneratedUpdate(gameTime);
