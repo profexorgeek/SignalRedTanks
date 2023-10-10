@@ -69,8 +69,8 @@ namespace TankMp
             SignalRedClient.Instance.Initialize();
 
             // fake latency
-            SignalRedClient.Instance.MinAveLatencyMilliseconds = 50;
-            SignalRedClient.Instance.MaxAveLatencySeconds = 150;
+            //SignalRedClient.Instance.MinAveLatencyMilliseconds = 50;
+            //SignalRedClient.Instance.MaxAveLatencySeconds = 150;
         }
 
         protected override void Update(GameTime gameTime)
