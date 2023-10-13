@@ -3,6 +3,7 @@
     "GLUE"
   ],
   "Source": "GLUE",
+  "ImplementsIVisible": true,
   "CreatedByOtherEntities": true,
   "Is2D": true,
   "ReferencedFiles": [
@@ -133,14 +134,14 @@
       "InstructionSaves": [
         {
           "Type": "float",
-          "Member": "Z",
-          "Value": 1.0,
+          "Member": "X",
+          "Value": -4.0,
           "Time": 0.0
         },
         {
           "Type": "float",
-          "Member": "X",
-          "Value": -4.0,
+          "Member": "Z",
+          "Value": 1.0,
           "Time": 0.0
         }
       ],
@@ -166,9 +167,9 @@
       ],
       "InstructionSaves": [
         {
-          "Type": "float",
-          "Member": "TextureScale",
-          "Value": 1.0,
+          "Type": "bool",
+          "Member": "Animate",
+          "Value": false,
           "Time": 0.0
         },
         {
@@ -184,9 +185,9 @@
           "Time": 0.0
         },
         {
-          "Type": "bool",
-          "Member": "Animate",
-          "Value": false,
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
           "Time": 0.0
         },
         {
@@ -224,12 +225,6 @@
       ],
       "InstructionSaves": [
         {
-          "Type": "float",
-          "Member": "TextureScale",
-          "Value": 1.0,
-          "Time": 0.0
-        },
-        {
           "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
           "Member": "AnimationChains",
           "Value": "EntityAnimations",
@@ -239,6 +234,12 @@
           "Type": "string",
           "Member": "CurrentChainName",
           "Value": "TankTreadLeft",
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
           "Time": 0.0
         },
         {
@@ -282,12 +283,6 @@
       ],
       "InstructionSaves": [
         {
-          "Type": "float",
-          "Member": "TextureScale",
-          "Value": 1.0,
-          "Time": 0.0
-        },
-        {
           "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
           "Member": "AnimationChains",
           "Value": "EntityAnimations",
@@ -297,6 +292,12 @@
           "Type": "string",
           "Member": "CurrentChainName",
           "Value": "TankTreadRight",
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
           "Time": 0.0
         },
         {

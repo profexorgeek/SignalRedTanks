@@ -15,11 +15,12 @@ namespace TankMp.Input
 {
     public class KeyboardController : ITankController, ISignalRedEntity<TankNetworkState>
     {
-        const float NetworkUpdateFrequencySeconds = 0.5f;
+        const float NetworkUpdateFrequencySeconds = 0.15f;
 
         Vector2 movementVector = Vector2.Zero;
         TankNetworkState recentState = new TankNetworkState();
         float secondsToNextNetworkUpdate;
+        float secondsToTankRespawn;
         TankBase tank;
 
         public string OwnerClientId { get; set; }
@@ -31,7 +32,7 @@ namespace TankMp.Input
             GuiManager.Cursor.WorldYAt(0) - Tank.Y,
             GuiManager.Cursor.WorldXAt(0) - Tank.X);
         public bool Firing => GuiManager.Cursor.PrimaryDown;
-        public bool IsDestroyed => Tank == null;
+        public bool TankDestroyed => Tank == null || Tank.Destroyed;
         public TankBase Tank
         {
             get
@@ -50,6 +51,12 @@ namespace TankMp.Input
 
         public void Update()
         {
+            // early out if tank is dead:
+            if(TankDestroyed)
+            {
+                return;
+            }
+
             var kb = InputManager.Keyboard;
             var cursor = GuiManager.Cursor;
 
@@ -58,10 +65,15 @@ namespace TankMp.Input
             movementVector.Y = kb.KeyDown(Keys.W) ? 1f : 0;
             movementVector.Y = kb.KeyDown(Keys.S) ? -1f : movementVector.Y;
 
-            SendNetworkUpdate();
+            if(Tank.CurrentHealth <= 0)
+            {
+                Tank.Die();
+            }
+
+            TrySendNetworkUpdate();
         }
 
-        public void SendNetworkUpdate()
+        public void TrySendNetworkUpdate()
         {
             if(SignalRedClient.Instance.Connected)
             {
@@ -82,6 +94,12 @@ namespace TankMp.Input
                 Tank.Y = networkState.Y;
                 Tank.Velocity.X = networkState.VelocityX;
                 Tank.Velocity.Y = networkState.VelocityY;
+                Tank.CurrentHealth = networkState.CurrentHealth;
+
+                if(Tank.CurrentHealth > 0)
+                {
+                    Tank.Destroyed = false;
+                }
             }
         }
 
@@ -98,9 +116,7 @@ namespace TankMp.Input
         {
             if (Tank != null)
             {
-                Tank.Controller = null;
-                Tank.Destroy();
-                Tank = null;
+                Tank.Destroyed = true;
             }
         }
 
@@ -116,6 +132,7 @@ namespace TankMp.Input
                 Y = Tank.Y,
                 VelocityX = Tank.Velocity.X,
                 VelocityY = Tank.Velocity.Y,
+                CurrentHealth = Tank.CurrentHealth,
             };
         }
 

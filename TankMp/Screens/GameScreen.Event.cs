@@ -14,14 +14,12 @@ namespace TankMp.Screens
         {
             if(bulletBase.OwnerClientId != tankBase.Controller.OwnerClientId && tankBase.LocallyOwned)
             {
-                // TODO: damage tank and mark that it has taken damage from this source
-                // so it can't be damaged for more than a frame
-
+                tankBase.TakeDamage(bulletBase);
                 SignalRedClient.Instance.DeleteEntity(bulletBase);
-
-                // destroy this bullet immediately because it hit our own tank
-                bulletBase.Destroy();
             }
+
+            // destroy this bullet immediately, the network will catch up
+            bulletBase.Destroy();
         }
         
     }

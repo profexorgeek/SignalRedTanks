@@ -10,7 +10,7 @@ namespace TankMp.Input
         float MovementMagnitude { get;}
         float AimAngle { get; }
         bool Firing { get;}
-        bool IsDestroyed { get; }
+        bool TankDestroyed { get; }
         TankBase Tank { get; set; }
 
         void Update();

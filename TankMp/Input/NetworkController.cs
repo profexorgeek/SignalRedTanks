@@ -27,7 +27,7 @@ namespace TankMp.Input
         public float MovementMagnitude => lastReceivedState.MovementMagnitude;
         public float AimAngle => lastReceivedState.AimAngle;
         public bool Firing => lastReceivedState.Firing;
-        public bool IsDestroyed => Tank == null;
+        public bool TankDestroyed => Tank == null;
         public TankBase Tank
         {
             get

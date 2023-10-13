@@ -1,11 +1,13 @@
 using FlatRedBall;
 using FlatRedBall.Instructions;
+using FlatRedBall.Screens;
 using NarfoxGameTools.Extensions;
 using SignalRed.Client;
 using SignalRed.Common.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TankMp.Entities.Tanks;
 using TankMp.Factories;
 using TankMp.Input;
 using TankMp.Models;
@@ -24,6 +26,8 @@ namespace TankMp.Screens
         List<ITankController> controllers = new List<ITankController>();
         ITankController localController;
 
+        public static GameScreen Current => ScreenManager.CurrentScreen as GameScreen;
+
         GameStateViewModel GameState => GameStateService.Instance.GameState;
 
         void CustomInitialize()
@@ -41,7 +45,7 @@ namespace TankMp.Screens
 
         void CustomActivity(bool firstTimeCalled)
         {
-            if(localController != null && localController.IsDestroyed)
+            if(localController != null && localController.TankDestroyed)
             {
                 timeToRespawn -= TimeManager.SecondDifference;
                 if(timeToRespawn < 0)
@@ -69,6 +73,7 @@ namespace TankMp.Screens
                 Y = Map.Top - rand.InRange(50, Map.Height - 50),
                 VelocityX = 0,
                 VelocityY = 0,
+                CurrentHealth = Globals.Tank_Health,
             };
             SignalRedClient.Instance.CreateEntity(state);
         }
@@ -82,7 +87,7 @@ namespace TankMp.Screens
                 var state = message.GetState<TankNetworkState>();
                 var controller = GetControllerForEntityId(message.EntityId);
                 controller = controller ?? CreateController(message.OwnerClientId, message.EntityId);
-                if (controller.IsDestroyed)
+                if (controller.TankDestroyed)
                 {
                     TrySpawnTankForController(controller);
                     controller.ApplyCreationState(state, message.DeltaSeconds);
@@ -195,12 +200,14 @@ namespace TankMp.Screens
 
         void TrySpawnTankForController(ITankController controller)
         {
-            var tank = TankBaseFactory.CreateNew();
-            controller.Tank = tank;
-
+            if(controller.Tank == null)
+            {
+                var tank = TankBaseFactory.CreateNew();
+                controller.Tank = tank;
+            }
             if(controller == localController)
             {
-                CameraController.Target = tank;
+                CameraController.Target = controller.Tank;
             }
         }
 

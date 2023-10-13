@@ -16,5 +16,8 @@ namespace TankMp.Models
         public float Y { get; set; } = 0;
         public float VelocityX { get; set; } = 0;
         public float VelocityY { get; set; } = 0;
+
+        // health state
+        public float CurrentHealth { get; set; } = 0;
     }
 }

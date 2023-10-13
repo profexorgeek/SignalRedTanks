@@ -683,6 +683,7 @@
     <Compile Include="TileGraphics\TileNodeNetworkCreator.Generated.cs" />
     <Compile Include="TileGraphics\Tileset.Generated.cs" />
     <Compile Include="TileGraphics\TilesetExtensionMethods.Generated.cs" />
+    <Compile Include="Globals.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
