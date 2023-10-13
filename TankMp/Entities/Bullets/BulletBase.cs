@@ -10,19 +10,16 @@ namespace TankMp.Entities.Bullets
 {
     public partial class BulletBase : ISignalRedEntity<BulletNetworkState>
     {
-        const float InterpolationSeconds = 0.5f;
-        const float UpdateFreqSeconds = 0.7f;
-        const float Speed = 300f;
-        const float MaxLife = 4f;
-
         float secondsUntilDeath;
         float secondsToNextUpdate;
         bool started = false;
-        float FrameLerp = TimeManager.SecondDifference / InterpolationSeconds;
+        float FrameLerp = TimeManager.SecondDifference / Globals.Bullet_LerpSeconds;
 
         public string OwnerClientId { get; set; }
         public string EntityId { get; set; }
         public bool IsLocallyOwned => SignalRedClient.Instance.ClientId == OwnerClientId;
+        public float Damage { get; set; } = 10f;
+
 
         private void CustomInitialize()
         {
@@ -40,12 +37,12 @@ namespace TankMp.Entities.Bullets
                     SignalRedClient.Instance.DeleteEntity(this);
                 }
 
-                secondsToNextUpdate -= TimeManager.SecondDifference;
-                if(secondsToNextUpdate <= 0)
-                {
-                    //SignalRedClient.Instance.UpdateEntity(this);
-                    secondsToNextUpdate = UpdateFreqSeconds;
-                }
+                // NOTE: bullets are only loosely synchronized based on
+                // their start position. Normally we would send updates here
+                // but all bullets move dumbly in a straight line and each client
+                // only really cares if a bullet hits their locally-owned tank.
+                // Therefore each client simulates bullets based on where it created
+                // the bullet.
             }
 
             RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
@@ -63,16 +60,17 @@ namespace TankMp.Entities.Bullets
 
         }
 
+
         public void ApplyCreationState(BulletNetworkState networkState, float deltaSeconds)
         {
-            var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
-            var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
+            var xSpeed = (float)(Math.Cos(networkState.Angle) * Globals.Bullet_Speed);
+            var ySpeed = (float)(Math.Sin(networkState.Angle) * Globals.Bullet_Speed);
             X = networkState.X + (xSpeed * deltaSeconds);
             Y = networkState.Y + (ySpeed * deltaSeconds);
             Velocity.X = xSpeed;
             Velocity.Y = ySpeed;
             RotationZ = networkState.Angle;
-            secondsUntilDeath = MaxLife - deltaSeconds;
+            secondsUntilDeath = Globals.Bullet_LifeSeconds - deltaSeconds;
             started = true;
         }
 
@@ -80,8 +78,8 @@ namespace TankMp.Entities.Bullets
         {
             if(!IsLocallyOwned)
             {
-                var xSpeed = (float)(Math.Cos(networkState.Angle) * Speed);
-                var ySpeed = (float)(Math.Sin(networkState.Angle) * Speed);
+                var xSpeed = (float)(Math.Cos(networkState.Angle) * Globals.Bullet_Speed);
+                var ySpeed = (float)(Math.Sin(networkState.Angle) * Globals.Bullet_Speed);
                 var xTarget = networkState.X + (xSpeed * deltaSeconds);
                 var yTarget = networkState.Y + (ySpeed * deltaSeconds);
                 X = MathHelper.Lerp(this.X, xTarget, FrameLerp);
