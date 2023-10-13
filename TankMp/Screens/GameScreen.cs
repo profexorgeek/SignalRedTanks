@@ -7,6 +7,7 @@ using SignalRed.Common.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TankMp.Entities.Bullets;
 using TankMp.Entities.Tanks;
 using TankMp.Factories;
 using TankMp.Input;
@@ -17,14 +18,11 @@ namespace TankMp.Screens
 {
     public partial class GameScreen
     {
-        const float ReckonFrequencySeconds = 0.5f;
-        const float RespawnSeconds = 5;
-
         public bool IsInNetworkedGame => SignalRedClient.Instance.Connected;
         float timeToRespawn = 0;
         Random rand = new Random();
-        List<ITankController> controllers = new List<ITankController>();
         ITankController localController;
+        TankBase localTank;
 
         public static GameScreen Current => ScreenManager.CurrentScreen as GameScreen;
 
@@ -32,184 +30,134 @@ namespace TankMp.Screens
 
         void CustomInitialize()
         {
-            RequestTankSpawn();
+            localController = new KeyboardController();
         }
-
-        
-
-        void CustomDestroy()
-        {
-
-
-        }
-
+        void CustomDestroy() { }
         void CustomActivity(bool firstTimeCalled)
         {
-            if(localController != null && localController.TankDestroyed)
+            localController?.Update();
+
+            if(localTank == null)
             {
                 timeToRespawn -= TimeManager.SecondDifference;
                 if(timeToRespawn < 0)
                 {
-                    //RequestTankSpawn();
+                    var respawnTankState = new TankNetworkState
+                    {
+                        // TODO: get a respawn location!
+                        X = 150,
+                        Y = -50,
+                        VelocityX = 0,
+                        VelocityY = 0,
+                        AimAngle = 0,
+                        MovementAngle = 0,
+                        MovementMagnitude = 0,
+                        Firing = false,
+                        CurrentHealth = Globals.Tank_Health,
+                    };
+                    SignalRedClient.Instance.CreateEntity(respawnTankState);
+                    timeToRespawn = Globals.Tank_RespawnSeconds;
+                }
+            }
+            else
+            {
+                if(localTank.CurrentHealth <= 0)
+                {
+                    SignalRedClient.Instance.DeleteEntity(localTank);
+                    DeleteTank(localTank);
                 }
             }
         }
-
-        static void CustomLoadStaticContent(string contentManagerName)
-        {
-
-
-        }
-
-        void RequestTankSpawn()
-        {
-            var state = new TankNetworkState()
-            {
-                MovementAngle = 0,
-                MovementMagnitude = 0,
-                AimAngle = 0,
-                Firing = false,
-                X = Map.Left + rand.InRange(50, Map.Width - 50),
-                Y = Map.Top - rand.InRange(50, Map.Height - 50),
-                VelocityX = 0,
-                VelocityY = 0,
-                CurrentHealth = Globals.Tank_Health,
-            };
-            SignalRedClient.Instance.CreateEntity(state);
-        }
+        static void CustomLoadStaticContent(string contentManagerName) { }
 
 
         protected override void CreateEntity(EntityStateMessage message)
         {
-            // tank creation
-            if (message.StateType == typeof(TankNetworkState).FullName)
-            {
-                var state = message.GetState<TankNetworkState>();
-                var controller = GetControllerForEntityId(message.EntityId);
-                controller = controller ?? CreateController(message.OwnerClientId, message.EntityId);
-                if (controller.TankDestroyed)
-                {
-                    TrySpawnTankForController(controller);
-                    controller.ApplyCreationState(state, message.DeltaSeconds);
-                }
-                else
-                {
-                    controller.ApplyUpdateState(state, message.DeltaSeconds);
-                }
-            }
+            if (message.StateType == typeof(TankNetworkState).FullName) CreateTank(message);
 
-            // bullet creation
-            else if(message.StateType == typeof(BulletNetworkState).FullName)
-            {
-                var state = message.GetState<BulletNetworkState>();
-                var bullet = BulletBaseFactory.CreateNew();
-                bullet.EntityId = message.EntityId;
-                bullet.OwnerClientId = message.OwnerClientId;
-                bullet.ApplyCreationState(state, message.DeltaSeconds);
-            }
+            else if (message.StateType == typeof(BulletNetworkState).FullName) CreateBullet(message);
         }
-
         protected override void UpdateEntity(EntityStateMessage message, bool isReckonMessage = false)
         {
-            if (message.StateType == typeof(TankNetworkState).FullName)
-            {
-                var state = message.GetState<TankNetworkState>();
-                var controller = GetControllerForEntityId(message.EntityId);
-                if (controller != null)
-                {
-                    controller.ApplyUpdateState(state, message.DeltaSeconds);
-                }
-            }
+            if (message.StateType == typeof(TankNetworkState).FullName) UpdateTank(message);
 
-            else if(message.StateType == typeof(BulletNetworkState).FullName)
-            {
-                var state = message.GetState<BulletNetworkState>();
-                var bullet = BulletList.Where(b => b.EntityId == message.EntityId).FirstOrDefault();
-                if(bullet != null)
-                {
-                    bullet.ApplyUpdateState(state, message.DeltaSeconds);
-                }
-            }
+            else if (message.StateType == typeof(BulletNetworkState).FullName) UpdateBullet(message);
         }
-
         protected override void DeleteEntity(EntityStateMessage message)
         {
-            if(message.StateType == typeof(TankNetworkState).FullName)
+            if (message.StateType == typeof(TankNetworkState).FullName) DeleteTank(message);
+
+            else if (message.StateType == typeof(BulletNetworkState).FullName) DeleteBullet(message);
+        }
+
+
+        TankBase CreateTank(EntityStateMessage message)
+        {
+            var state = message.GetState<TankNetworkState>();
+            var tank = TankBaseFactory.CreateNew(state.X, state.Y);
+            tank.OwnerClientId = message.OwnerClientId;
+            tank.EntityId = message.EntityId;
+            tank.ApplyCreationState(state, message.DeltaSeconds);
+
+            if(tank.OwnerClientId == SignalRedClient.Instance.ClientId)
+            {
+                localController.SetTargetTank(tank);
+                localTank = tank;
+                CameraController.Target = localTank;
+            }
+
+            return tank;
+        }
+        void UpdateTank(EntityStateMessage message)
+        {
+            // EARLY OUT: we don't take network updates for entities we own
+            if (message.OwnerClientId == SignalRedClient.Instance.ClientId)
+            {
+                return;
+            }
+
+            var existing = TankBaseList.FirstOrDefault(t => t.EntityId == message.EntityId);
+            if (existing != null)
             {
                 var state = message.GetState<TankNetworkState>();
-                var controller = GetControllerForEntityId(message.EntityId);
-                if(controller != null)
-                {
-                    // NOTE: this doesn't actually destroy the controller, it tells the controller
-                    // to destroy its tank. The controller will stick around and respawn
-                    controller.Destroy(state, message.DeltaSeconds);
-
-                    bool isLocal = controller.OwnerClientId == SignalRedClient.Instance.ClientId;
-                    if (isLocal)
-                    {
-                        timeToRespawn = RespawnSeconds;
-                    }
-                }
-            }
-
-            if(message.StateType == typeof(BulletNetworkState).FullName)
-            {
-                var state = message.GetState<BulletNetworkState>();
-                var bullet = BulletList.Where(b => b.EntityId == message.EntityId).FirstOrDefault();
-                if(bullet != null)
-                {
-                    bullet.Destroy(state, message.DeltaSeconds);
-                }
+                existing.ApplyUpdateState(state, message.DeltaSeconds);
             }
         }
-
-
-        ITankController? GetControllerForEntityId(string id)
+        void DeleteTank(EntityStateMessage message)
         {
-            return controllers.Where(c => c.EntityId == id).FirstOrDefault();
+            var tank = TankBaseList.FirstOrDefault(t => t.EntityId == message.EntityId);
+            if(tank != null)
+            {
+                DeleteTank(tank);
+            }
         }
-
-        /// <summary>
-        /// Creates a new controller and adds it to the list. If the controller
-        /// is owned by this client, it will be a local controller type such as
-        /// Keyboard. Otherwise it'll be a NetworkController. This also sets
-        /// the localController field
-        /// </summary>
-        /// <param name="ownerId">The ClientId of the entity owner</param>
-        /// <param name="entityId">The unique ID of the entity on the network</param>
-        /// <returns>A valid ITankController</returns>
-        ITankController CreateController(string ownerId, string entityId)
+        void DeleteTank(TankBase tank)
         {
-            ITankController ctrl;
-            if(ownerId == GameState.LocalPlayer.OwnerClientId)
+            if (tank == localTank)
             {
-                ctrl = new KeyboardController();
-                localController = ctrl;
+                localTank = null;
+                localController.ClearTargetTank();
+                CameraController.Target = null;
             }
-            else
-            {
-                ctrl = new NetworkController();
-            }
-
-            ctrl.OwnerClientId = ownerId;
-            ctrl.EntityId = entityId;
-            controllers.Add(ctrl);
-
-            return ctrl;
+            tank.Destroy();
         }
 
-        void TrySpawnTankForController(ITankController controller)
+        BulletBase CreateBullet(EntityStateMessage message)
         {
-            if(controller.Tank == null)
-            {
-                var tank = TankBaseFactory.CreateNew();
-                controller.Tank = tank;
-            }
-            if(controller == localController)
-            {
-                CameraController.Target = controller.Tank;
-            }
+            var state = message.GetState<BulletNetworkState>();
+            var bullet = BulletBaseFactory.CreateNew();
+            bullet.EntityId = message.EntityId;
+            bullet.OwnerClientId = message.OwnerClientId;
+            bullet.ApplyCreationState(state, message.DeltaSeconds);
+            return bullet;
         }
-
+        void UpdateBullet(EntityStateMessage message)
+        {
+            // NOOP: we don't update bullets from the network because they are locally simulated
+        }
+        void DeleteBullet(EntityStateMessage message)
+        {
+            // NOOP: we don't destroy bullets from the network because they are locally simulated.
+        }
     }
 }

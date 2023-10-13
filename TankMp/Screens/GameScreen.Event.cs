@@ -12,14 +12,11 @@ namespace TankMp.Screens
         }
         void OnBulletsVsTanksCollided (Entities.Bullets.BulletBase bulletBase, Entities.Tanks.TankBase tankBase) 
         {
-            if(bulletBase.OwnerClientId != tankBase.Controller.OwnerClientId && tankBase.LocallyOwned)
+            if(bulletBase.OwnerClientId != tankBase.OwnerClientId)
             {
                 tankBase.TakeDamage(bulletBase);
-                SignalRedClient.Instance.DeleteEntity(bulletBase);
+                bulletBase.Destroy();
             }
-
-            // destroy this bullet immediately, the network will catch up
-            bulletBase.Destroy();
         }
         
     }

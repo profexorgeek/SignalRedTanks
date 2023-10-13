@@ -9,6 +9,8 @@ TankMp is a game that only exists to test the library. It is not intended to hav
 - [ ] Get damage, death and respawn working
 - [ ] Tank respawning, counters, etc should be managed by the controller
 - [ ] Add respawn zone entity to map
+- [ ] Tank does not need to implement IVisible
+- [ ] Bullets do not need misleading ApplyUpdate logic
 - [ ] Add Host/Guest concept to either core library or game
 - [ ] Add ability to clear all history from the server
 - [ ] Add ability to host server as Azure instance

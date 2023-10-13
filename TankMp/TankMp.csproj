@@ -622,7 +622,6 @@
     <Compile Include="GumRuntimes\TextRuntime.Generated.cs" />
     <Compile Include="Input\ITankController.cs" />
     <Compile Include="Input\KeyboardController.cs" />
-    <Compile Include="Input\NetworkController.cs" />
     <Compile Include="Models\BulletModels.cs" />
     <Compile Include="Models\GameStateModels.cs" />
     <Compile Include="Models\PlayerStatusModels.cs" />

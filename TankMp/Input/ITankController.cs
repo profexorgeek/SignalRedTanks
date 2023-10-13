@@ -4,15 +4,13 @@ using TankMp.Models;
 
 namespace TankMp.Input
 {
-    public interface ITankController : ISignalRedEntity<TankNetworkState>
+    public interface ITankController
     {
-        float MovementAngle { get;}
-        float MovementMagnitude { get;}
-        float AimAngle { get; }
-        bool Firing { get;}
-        bool TankDestroyed { get; }
-        TankBase Tank { get; set; }
+        TankBase Tank { get; }
 
         void Update();
+
+        void SetTargetTank(TankBase tank);
+        void ClearTargetTank();
     }
 }
