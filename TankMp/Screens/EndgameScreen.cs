@@ -1,3 +1,4 @@
+using SignalRed.Client;
 using TankMp.Services;
 
 namespace TankMp.Screens
@@ -7,8 +8,9 @@ namespace TankMp.Screens
 
         void CustomInitialize()
         {
-            EndgameScreenGum.EndgameWinner.Text = GameStateService.Instance.GameState.Winner.Username;
-            EndgameScreenGum.ReturnToLobbyButton.FormsControl.Click += (s, e) => MoveToScreen(typeof(ServerLobby).FullName);
+            var winner = GameStateService.Instance.GameState.Winner;
+            EndgameScreenGum.EndgameWinner.Text = winner != null ? winner.Username : "";
+            EndgameScreenGum.ReturnToLobbyButton.FormsControl.Click += (s, e) => SignalRedClient.Instance.RequestScreenTransition(typeof(ServerLobby).FullName, true);
         }
 
         void CustomActivity(bool firstTimeCalled)

@@ -29,18 +29,29 @@ namespace TankMp.Screens
             ServerLobbyGum.FormsControl.ServerLobbyMenu.LeaveButton.Click += (s, e) => LeaveServer();
             ServerLobbyGum.FormsControl.ServerLobbyMenu.StartButton.Click += (s, e) => RequestStartGame();
 
-            // clear any players and messages that existed before, we'll get a fresh list from the server
+            // clear any players and messages that existed before
             GameState.Messages.Clear();
-            GameState.Players.Clear();
 
-            var state = new PlayerStatusNetworkState()
+            if(GameState.LocalPlayer == null)
             {
-                CurrentStatus = (int)PlayerJoinStatus.Connected,
-                Username = GameState.LocalUsername,
-                Kills = 0,
-                Deaths = 0,
-            };
-            SignalRedClient.Instance.CreateEntity(state);
+                var state = new PlayerStatusNetworkState()
+                {
+                    CurrentStatus = (int)PlayerJoinStatus.Connected,
+                    Username = GameState.LocalUsername,
+                    Kills = 0,
+                    Deaths = 0,
+                };
+                SignalRedClient.Instance.CreateEntity(state);
+            }
+            else
+            {
+                var plyr = GameState.LocalPlayer;
+                plyr.CurrentStatus = PlayerJoinStatus.Connected;
+                plyr.Kills = 0;
+                plyr.Deaths = 0;
+                SignalRedClient.Instance.UpdateEntity(plyr);
+            }
+            
         }
         void CustomDestroy() { }
         void CustomActivity(bool firstTimeCalled)

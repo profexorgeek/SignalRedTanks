@@ -14,7 +14,7 @@ namespace TankMp.Models
         public string LocalUsername { get => Get<string>(); set => Set(value); }
         public string CurrentChat { get => Get<string>(); set => Set(value); }
         public bool IsGameStartable { get => Get<bool>(); private set => Set(value); }
-        public PlayerStatusViewModel Winner => Players.OrderByDescending(p => p.Kills).First();
+        public PlayerStatusViewModel Winner => Players != null && Players.Count > 0 ? Players.OrderByDescending(p => p.Kills).First() : null;
 
         [DependsOn(nameof(Players))]
         public PlayerStatusViewModel LocalPlayer => Players.Where(p => p.OwnerClientId == SignalRedClient.Instance.ClientId).FirstOrDefault();
