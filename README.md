@@ -1,4 +1,4 @@
-# TankMp aka SignalRed Tanks
+# SignalRed Tanks
 
 SignalRed is an open source library designed to make it easier to build networked multiplayer games that use SignalR as the transport layer.
 
