@@ -1,5 +1,49 @@
 {
   "UserEvents": {
-    "jusjohns": []
+    "jusjohns": [],
+    "justi": [
+      {
+        "NewName": "EndgameScreenGum.TextInstance",
+        "OldName": null,
+        "ElementType": "Screens",
+        "EventType": 5,
+        "TimestampUtc": "2023-10-13T18:04:59.7906107Z"
+      },
+      {
+        "NewName": "EndgameScreenGum.EndgameTitle",
+        "OldName": "EndgameScreenGum.TextInstance",
+        "ElementType": "Screens",
+        "EventType": 7,
+        "TimestampUtc": "2023-10-13T18:05:53.1490764Z"
+      },
+      {
+        "NewName": "EndgameScreenGum.TextInstance",
+        "OldName": null,
+        "ElementType": "Screens",
+        "EventType": 5,
+        "TimestampUtc": "2023-10-13T18:05:56.2543369Z"
+      },
+      {
+        "NewName": "EndgameScreenGum.EndgameWinner",
+        "OldName": "EndgameScreenGum.TextInstance",
+        "ElementType": "Screens",
+        "EventType": 7,
+        "TimestampUtc": "2023-10-13T18:05:59.7462493Z"
+      },
+      {
+        "NewName": "EndgameScreenGum.ButtonConfirmInstance",
+        "OldName": null,
+        "ElementType": "Screens",
+        "EventType": 5,
+        "TimestampUtc": "2023-10-13T18:08:58.3869541Z"
+      },
+      {
+        "NewName": "EndgameScreenGum.ReturnToLobbyButton",
+        "OldName": "EndgameScreenGum.ButtonConfirmInstance",
+        "ElementType": "Screens",
+        "EventType": 7,
+        "TimestampUtc": "2023-10-13T18:09:44.1094002Z"
+      }
+    ]
   }
 }
