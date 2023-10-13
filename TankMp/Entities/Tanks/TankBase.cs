@@ -67,11 +67,11 @@ namespace TankMp.Entities.Tanks
             if (CurrentState == null) return;
 
             // first, interpolate to where we should be per the last state
-            //var timeSinceLastState = TimeManager.CurrentTime - lastStateUpdateTime;
-            //var targetX = CurrentState.X + (float)(CurrentState.VelocityX * timeSinceLastState);
-            //var targetY = CurrentState.Y + (float)(CurrentState.VelocityY * timeSinceLastState);
-            //X = MathHelper.Lerp(X, targetX, FrameLerp);
-            //Y = MathHelper.Lerp(Y, targetY, FrameLerp);
+            var timeSinceLastState = TimeManager.CurrentTime - lastStateUpdateTime;
+            var targetX = CurrentState.X + (float)(CurrentState.VelocityX * timeSinceLastState);
+            var targetY = CurrentState.Y + (float)(CurrentState.VelocityY * timeSinceLastState);
+            X = MathHelper.Lerp(X, targetX, FrameLerp);
+            Y = MathHelper.Lerp(Y, targetY, FrameLerp);
 
             // now apply state input
             var throttle = CurrentState.MovementMagnitude.Clamp(-1f, 1f);
@@ -116,6 +116,16 @@ namespace TankMp.Entities.Tanks
             {
                 CurrentHealth -= bullet.Damage;
                 damageSources.Add(bullet);
+
+                // if this takes us to zero health, send a generic
+                // message granting a kill credit to the owner of
+                // the last bullet that hit us
+                if(CurrentHealth <= 0)
+                {
+                    SignalRedClient.Instance.CreateGenericMessage(
+                        Globals.Network_KillCreditKey,
+                        bullet.OwnerClientId);
+                }
             }
         }
 

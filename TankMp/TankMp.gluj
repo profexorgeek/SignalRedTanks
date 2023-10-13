@@ -105,6 +105,9 @@
       "Name": "Screens\\ConnectToServer"
     },
     {
+      "Name": "Screens\\EndgameScreen"
+    },
+    {
       "Name": "Screens\\GameScreen"
     },
     {

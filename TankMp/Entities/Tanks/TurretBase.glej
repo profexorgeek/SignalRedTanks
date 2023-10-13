@@ -89,15 +89,15 @@
           "Time": 0.0
         },
         {
-          "Type": "float",
-          "Member": "X",
-          "Value": 18.0,
-          "Time": 0.0
-        },
-        {
           "Type": "bool",
           "Member": "Visible",
           "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": 18.0,
           "Time": 0.0
         }
       ],
@@ -125,18 +125,6 @@
       ],
       "InstructionSaves": [
         {
-          "Type": "float",
-          "Member": "TextureScale",
-          "Value": 1.0,
-          "Time": 0.0
-        },
-        {
-          "Type": "bool",
-          "Member": "UseAnimationRelativePosition",
-          "Value": false,
-          "Time": 0.0
-        },
-        {
           "Type": "bool",
           "Member": "Animate",
           "Value": false,
@@ -155,15 +143,27 @@
           "Time": 0.0
         },
         {
-          "Type": "float",
-          "Member": "X",
-          "Value": 8.0,
-          "Time": 0.0
-        },
-        {
           "Type": "int",
           "Member": "CurrentFrameIndex",
           "Value": 2,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
+          "Time": 0.0
+        },
+        {
+          "Type": "bool",
+          "Member": "UseAnimationRelativePosition",
+          "Value": false,
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "X",
+          "Value": 8.0,
           "Time": 0.0
         }
       ],

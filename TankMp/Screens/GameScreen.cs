@@ -67,10 +67,21 @@ namespace TankMp.Screens
                     DeleteTank(localTank);
                 }
             }
+
+            if(GameStateService.Instance.GameState.LocalPlayer.Kills >= Globals.Game_KillsToWin)
+            {
+                SignalRedClient.Instance.RequestScreenTransition(typeof(EndgameScreen).FullName);
+            }
         }
         static void CustomLoadStaticContent(string contentManagerName) { }
 
-
+        protected override void ApplyGenericMessage(GenericMessage message)
+        {
+            if(message.MessageKey == Globals.Network_KillCreditKey)
+            {
+                GameStateService.Instance.GameState.GrantKillCredit(message.MessageValue);
+            }
+        }
         protected override void CreateEntity(EntityStateMessage message)
         {
             if (message.StateType == typeof(TankNetworkState).FullName) CreateTank(message);
@@ -82,6 +93,8 @@ namespace TankMp.Screens
             if (message.StateType == typeof(TankNetworkState).FullName) UpdateTank(message);
 
             else if (message.StateType == typeof(BulletNetworkState).FullName) UpdateBullet(message);
+
+            else if (message.StateType == typeof(PlayerStatusNetworkState).FullName) UpdatePlayer(message);
         }
         protected override void DeleteEntity(EntityStateMessage message)
         {
@@ -90,6 +103,19 @@ namespace TankMp.Screens
             else if (message.StateType == typeof(BulletNetworkState).FullName) DeleteBullet(message);
         }
 
+
+        void UpdatePlayer(EntityStateMessage message)
+        {
+            // EARLY OUT: we don't accept updates to our player from the network
+            if (message.OwnerClientId != SignalRedClient.Instance.ClientId) return;
+
+            var player = GameStateService.Instance.GameState.Players.FirstOrDefault(p => p.EntityId == message.EntityId);
+            if(player != null)
+            {
+                var state = message.GetState<PlayerStatusNetworkState>();
+                player.ApplyUpdateState(state, message.DeltaSeconds);
+            }
+        }
 
         TankBase CreateTank(EntityStateMessage message)
         {
@@ -138,6 +164,10 @@ namespace TankMp.Screens
                 localTank = null;
                 localController.ClearTargetTank();
                 CameraController.Target = null;
+
+                var plyr = GameStateService.Instance.GameState.LocalPlayer;
+                plyr.Deaths += 1;
+                SignalRedClient.Instance.UpdateEntity(plyr);
             }
             tank.Destroy();
         }

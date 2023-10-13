@@ -1,0 +1,18 @@
+{
+  "Tags": [
+    "GLUE"
+  ],
+  "Source": "GLUE",
+  "BaseScreen": "Screens\\NetworkedScreenBase",
+  "BaseElement": "Screens\\NetworkedScreenBase",
+  "ReferencedFiles": [
+    {
+      "Name": "GumProject/Screens/EndgameScreenGum.gusx",
+      "IsSharedStatic": true,
+      "RuntimeType": "TankMp.GumRuntimes.EndgameScreenGumRuntime",
+      "ProjectsToExcludeFrom": []
+    }
+  ],
+  "Name": "Screens\\EndgameScreen",
+  "CustomClassesForExport": []
+}

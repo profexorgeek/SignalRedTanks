@@ -2,8 +2,11 @@
 {
     public static class Globals
     {
-        public static float Network_EntityUpdateSeconds = 0.15f;
+        public static int Game_KillsToWin = 2;
 
+        public static float Network_EntityUpdateSeconds = 0.15f;
+        public static string Network_ChatMessageKey = "ChatMessage";
+        public static string Network_KillCreditKey = "KillCredit";
 
         public static float Tank_SecondsToRespawn = 5f;
         public static float Tank_Speed = 200f;

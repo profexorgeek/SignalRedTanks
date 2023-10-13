@@ -14,6 +14,7 @@ namespace TankMp.Models
         public string LocalUsername { get => Get<string>(); set => Set(value); }
         public string CurrentChat { get => Get<string>(); set => Set(value); }
         public bool IsGameStartable { get => Get<bool>(); private set => Set(value); }
+        public PlayerStatusViewModel Winner => Players.OrderByDescending(p => p.Kills).First();
 
         [DependsOn(nameof(Players))]
         public PlayerStatusViewModel LocalPlayer => Players.Where(p => p.OwnerClientId == SignalRedClient.Instance.ClientId).FirstOrDefault();
@@ -29,6 +30,15 @@ namespace TankMp.Models
         public void UpdateStartableStatus()
         {
             IsGameStartable = Players.Count > 0 && Players.All(p => p.CurrentStatus == PlayerJoinStatus.Ready);
+        }
+
+        public void GrantKillCredit(string clientId)
+        {
+            var player = Players.FirstOrDefault(p => p.OwnerClientId == clientId);
+            if(player != null)
+            {
+                player.Kills += 1;
+            }
         }
     }
 }

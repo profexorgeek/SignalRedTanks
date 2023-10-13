@@ -13,7 +13,6 @@ namespace TankMp.Screens
 {
     public partial class ServerLobby
     {
-        const string MessageKey = "LobbyMessage";
         const float PingUpdateFrequencySeconds = 0.5f;
         const float ReckonFrequencySeconds = 3f;
 
@@ -72,7 +71,7 @@ namespace TankMp.Screens
             if(!string.IsNullOrWhiteSpace(GameState.CurrentChat))
             {
                 var chat = $"{GameState.LocalPlayer?.Username}: {GameState.CurrentChat}";
-                SignalRedClient.Instance.CreateGenericMessage(MessageKey, chat);
+                SignalRedClient.Instance.CreateGenericMessage(Globals.Network_ChatMessageKey, chat);
                 GameState.CurrentChat = "";
             }            
         }
@@ -110,7 +109,7 @@ namespace TankMp.Screens
 
         protected override void ApplyGenericMessage(GenericMessage message)
         {
-            if (message.MessageKey == MessageKey)
+            if (message.MessageKey == Globals.Network_ChatMessageKey)
             {
                 GameState.Messages.Add(message.MessageValue);
             }

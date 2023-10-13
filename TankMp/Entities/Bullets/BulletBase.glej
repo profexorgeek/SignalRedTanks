@@ -118,12 +118,6 @@
       ],
       "InstructionSaves": [
         {
-          "Type": "float",
-          "Member": "TextureScale",
-          "Value": 1.0,
-          "Time": 0.0
-        },
-        {
           "Type": "FlatRedBall.Graphics.Animation.AnimationChainList",
           "Member": "AnimationChains",
           "Value": "EntityAnimations",
@@ -133,6 +127,12 @@
           "Type": "string",
           "Member": "CurrentChainName",
           "Value": "TankShot",
+          "Time": 0.0
+        },
+        {
+          "Type": "float",
+          "Member": "TextureScale",
+          "Value": 1.0,
           "Time": 0.0
         },
         {

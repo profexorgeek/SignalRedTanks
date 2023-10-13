@@ -273,6 +273,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>ConnectToServerGum</Name>
     </None>
+    <None Include="content\gumproject\screens\endgamescreengum.gusx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>EndgameScreenGum</Name>
+    </None>
     <None Include="content\gumproject\screens\gamescreengum.gusx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>GameScreenGum</Name>
@@ -363,6 +367,7 @@
     <Compile Include="FileAliases.Generated.cs" />
     <Compile Include="Forms\Components\Menus\ServerLobbyForms.Generated.cs" />
     <Compile Include="Forms\Screens\ConnectToServerGumForms.Generated.cs" />
+    <Compile Include="Forms\Screens\EndgameScreenGumForms.Generated.cs" />
     <Compile Include="Forms\Screens\GameScreenGumForms.Generated.cs" />
     <Compile Include="Forms\Screens\Level1GumForms.Generated.cs" />
     <Compile Include="Forms\Screens\NetworkedScreenBaseGumForms.Generated.cs" />
@@ -594,6 +599,10 @@
     <Compile Include="GumRuntimes\Elements\VerticalLinesRuntime.Generated.cs">
       <DependentUpon>VerticalLinesRuntime.cs</DependentUpon>
     </Compile>
+    <Compile Include="GumRuntimes\EndgameScreenGumRuntime.cs" />
+    <Compile Include="GumRuntimes\EndgameScreenGumRuntime.Generated.cs">
+      <DependentUpon>EndgameScreenGumRuntime.cs</DependentUpon>
+    </Compile>
     <Compile Include="GumRuntimes\GameScreenGumRuntime.cs" />
     <Compile Include="GumRuntimes\GameScreenGumRuntime.Generated.cs">
       <DependentUpon>GameScreenGumRuntime.cs</DependentUpon>
@@ -632,6 +641,10 @@
     <Compile Include="Screens\ConnectToServer.cs" />
     <Compile Include="Screens\ConnectToServer.Generated.cs">
       <DependentUpon>ConnectToServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\EndgameScreen.cs" />
+    <Compile Include="Screens\EndgameScreen.Generated.cs">
+      <DependentUpon>EndgameScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Screens\GameScreen.Event.cs">

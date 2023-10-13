@@ -11,49 +11,42 @@ namespace TankMp.Entities.Bullets
     public partial class BulletBase : ISignalRedEntity<BulletNetworkState>
     {
         float secondsUntilDeath;
-        float secondsToNextUpdate;
         bool started = false;
-        float FrameLerp = TimeManager.SecondDifference / Globals.Bullet_LerpSeconds;
 
         public string OwnerClientId { get; set; }
         public string EntityId { get; set; }
-        public bool IsLocallyOwned => SignalRedClient.Instance.ClientId == OwnerClientId;
-        public float Damage { get; set; } = 10f;
+        public float Damage { get; set; }
 
 
         private void CustomInitialize()
         {
-
-
+            Damage = Globals.Bullet_Damage;
         }
-
         private void CustomActivity()
         {
-            if (started && IsLocallyOwned)
+            // NOTE: bullets are only loosely synchronized based on
+            // their start position. Normally we would send updates here
+            // but all bullets move dumbly in a straight line and each client
+            // only really cares if a bullet hits their locally-owned tank.
+            // Therefore each client simulates bullets based on where it created
+            // the bullet.
+            if (started)
             {
+                RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
                 secondsUntilDeath -= TimeManager.SecondDifference;
                 if(secondsUntilDeath <= 0)
                 {
-                    SignalRedClient.Instance.DeleteEntity(this);
+                    Destroy();
                 }
 
-                // NOTE: bullets are only loosely synchronized based on
-                // their start position. Normally we would send updates here
-                // but all bullets move dumbly in a straight line and each client
-                // only really cares if a bullet hits their locally-owned tank.
-                // Therefore each client simulates bullets based on where it created
-                // the bullet.
+                
             }
-
-            RotationZ = (float)Math.Atan2(Velocity.Y, Velocity.X);
         }
-
         private void CustomDestroy()
         {
 
 
         }
-
         private static void CustomLoadStaticContent(string contentManagerName)
         {
 
@@ -73,23 +66,10 @@ namespace TankMp.Entities.Bullets
             secondsUntilDeath = Globals.Bullet_LifeSeconds - deltaSeconds;
             started = true;
         }
-
         public void ApplyUpdateState(BulletNetworkState networkState, float deltaSeconds, bool force = false)
         {
-            if(!IsLocallyOwned)
-            {
-                var xSpeed = (float)(Math.Cos(networkState.Angle) * Globals.Bullet_Speed);
-                var ySpeed = (float)(Math.Sin(networkState.Angle) * Globals.Bullet_Speed);
-                var xTarget = networkState.X + (xSpeed * deltaSeconds);
-                var yTarget = networkState.Y + (ySpeed * deltaSeconds);
-                X = MathHelper.Lerp(this.X, xTarget, FrameLerp);
-                Y = MathHelper.Lerp(this.Y, yTarget, FrameLerp);
-                RotationZ = networkState.Angle;
-                Velocity.X = xSpeed;
-                Velocity.Y = ySpeed;
-            }
+            // NOOP: bullets do not take network updates, they are entirely locally simulated
         }
-
         public BulletNetworkState GetState()
         {
             return new BulletNetworkState()
@@ -99,7 +79,6 @@ namespace TankMp.Entities.Bullets
                 Angle = this.RotationZ,
             };
         }
-
         public void Destroy(BulletNetworkState networkState, float deltaSeconds)
         {
             // move this back to where the destroy occurred
